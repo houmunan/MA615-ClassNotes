@@ -102,3 +102,20 @@ is.atomic(c)
 is.list(c)
 c[5]
 is.na(c)
+is.na(c)*1
+typeof(c[5])
+class(a)
+
+d <- c(c(1,2,3),c(4,5,6))
+d
+
+#example:mtcars
+dat1 <- mtcars
+str(dat1)
+
+
+
+mtcars[,1]
+typeof(mtcars[,1])
+model1 <- lm(mtcars$mpg~mtcars$hp,data = mtcars)
+model1 <- lm(mtcars$mpg~mtcars$hp)
