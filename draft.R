@@ -62,3 +62,36 @@ e <- floor(20*runif(4))
 f <- floor(20*runif(4))
 e*f
 sum(e*f)
+
+t(e)%*%f #transport of e
+
+
+e
+f
+outer(e,f,"*")
+outer(e,f,">")
+outer(e,f,">")*1
+
+
+
+#Class 9.14.2016 Wed
+
+#TURN IN HOMEWORK: Click"File - Compile Notebook"
+
+
+a <- runif(9)
+a
+str(a) #structure command, show structure,显示大体结构等资料
+length(a)
+typeof(a)
+
+#判断类型
+
+is.atomic(a)
+is.list(a)
+is.vector(a)
+
+a[5]
+a[5] <- NA #删除a中第五个
+
+typeof(a[5])
