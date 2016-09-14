@@ -92,6 +92,13 @@ is.list(a)
 is.vector(a)
 
 a[5]
-a[5] <- NA #删除a中第五个
+a[5] <- NA #删除a中第五个;you can decide how to modify the data
 
 typeof(a[5])
+
+c <- as.integer(50*a)
+c
+is.atomic(c)
+is.list(c)
+c[5]
+is.na(c)
