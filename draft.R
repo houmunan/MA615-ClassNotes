@@ -119,3 +119,35 @@ mtcars[,1]
 typeof(mtcars[,1])
 model1 <- lm(mtcars$mpg~mtcars$hp,data = mtcars)
 model1 <- lm(mtcars$mpg~mtcars$hp)
+
+
+
+
+
+
+
+#Class 9.16.2016 FRI
+
+
+#Exercise 1 Question 2
+
+par(new=TRUE)
+x <- seq(3,6,by=0.1)
+prod <- exp(x)*cos(x)
+plot(prod, col="blue", type="l")
+points(cos(x),col="red")
+#par(new=TRUE)
+#y <- exp(x)
+points(exp(x),col="green")
+
+
+
+#Exercise 1 Question 6
+
+
+
+
+
+
+
+
