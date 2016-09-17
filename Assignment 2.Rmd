@@ -9,31 +9,298 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Exercise 0 Basic Arithmetic
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+1. Assignment, variables
+Try some simple commands
+
+```{r e0q1}
+a <- 2
+b <- 50
+c <- 3
+
+a+b
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+b/a
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+50%%3
+```
+
+```{r}
+sin(0)
+```
+
+```{r}
+cos(0)
+```
+
+```{r}
+sin45 <- sin(pi/4)
+4*asin(sin45)
+```
+
+```{r}
+e3 <- exp(3)
+log(e3)
+```
+
+-     Minus, can be unary or binary
++     Plus, can be unary or binary
+!     Unary not
+~     Tilde, used for model formulae, can be either unary or binary
+?     Help
+:     Sequence, binary (in model formulae: interaction)
+*     Multiplication, binary
+/     Division, binary
+^     Exponentiation, binary
+%x%   Special binary operators, x can be replaced by any valid name
+%%    Modulus, binary
+%/%   Integer divide, binary
+%*%   Matrix product, binary
+%o%   Outer product, binary
+%x%   Kronecker product, binary
+%in%  Matching operator, binary (in model formulae: nesting)
+<     Less than, binary
+>     Greater than, binary
+==    Equal to, binary
+>=    Greater than or equal to, binary
+<=    Less than or equal to, binary
+&     And, binary, vectorized
+&&    And, binary, not vectorized
+|     Or, binary, vectorized
+||    Or, binary, not vectorized
+<-    Left assignment, binary
+->    Right assignment, binary
+$     List subset, binary
+  
+
+2. Try some basic Vector operations
+
+```{r e0q2}
+# create 
+a_vec <- c(3, 50, 5, 6, 10, 40, 20, 2, 100, 30, 25, 80) 
+# length 
+length(a_vec)
+```
+
+```{r}
+# sum
+sum(a_vec)
+```
+
+```{r}
+# cumulative sum
+cumsum(a_vec)
+```
+
+```{r}
+# summary statistics
+summary(a_vec)
+```
+
+```{r}
+# variance
+var(a_vec)
+```
+
+```{r}
+# is it reatlly a vector?
+str(a_vec)
+```
+
+```{r}
+# was that not clear?
+is.vector(a_vec)
+```
+
+```{r}
+# assign the 5th element of a_vec to d
+d <- a_vec[5]
+a_vec
+```
+
+```{r}
+# what does this mean?
+length(d)
+```
+
+```{r}
+# Really? Well, ...
+is.vector(d)
+```
+
+```{r}
+# how about random numbers?
+random_vec <- runif(20)
+length(random_vec)
+```
+
+```{r}
+random_vec
+```
+
+```{r}
+# what if random_vec was really big?
+random_vec_big <- runif(10000)
+length(random_vec_big)
+```
+
+```{r}
+head(random_vec_big)
+```
+
+```{r}
+# need more than 6?
+head(random_vec_big, 20)
+```
+
+```{r}
+# too many decimal places?
+options(digits = 2)
+tail(random_vec_big)
+```
+
+```{r}
+# What if I want my random series to be repeatable?
+set.seed(2)
+r <- runif(30)
+head(r,10)
+```
+
+```{r}
+r1 <- runif(20)
+head(r1,10)
+```
+
+```{r}
+set.seed(2)
+s <- runif(10)
+s
+```
+
+```{r}
+# not enough digits?
+options(digits = 4)
+head(r)
+```
+
+```{r}
+head(s)
+```
+
+```{r}
+# can I get a picture of that?
+plot(r)
+```
+
+```{r}
+# that's not very helpful. Histogram.
+hist(r)
+```
+
+```{r}
+# doesn't look uniform? increase the sample size
+hist(random_vec_big)
+```
+
+All these blocks of R may not be what you need.
+Remember a_vec? Sure, avec is (3, 50, 5, 6, 10, 40, 20, 2, 100, 30, 25, 80). Here’s a_vec’s mean 30.9167.
+Wow – a_vec is a strange set of data, what does it look like?
+
+```{r}
+boxplot(a_vec)
+```
 
 
+3. Finally, let’s look at matrice, lists, and data.frames
+
+```{r}
+# make a random matrix 
+A <- matrix(data = floor(30*runif(16)), nrow = 4) 
+A
+```
+
+```{r}
+# how big is the matrix?
+dim(A)
+```
+
+```{r}
+# Let's make a vector to multiply by A
+b <- floor(20*runif(dim(A)[2]))
+b
+```
+
+```{r}
+# solve Ax = b
+x <- solve(A,b)
+x
+```
+
+```{r}
+b1 <- A%*%x
+b1
+```
+
+```{r}
+b2 <- as.vector(A%*%x) #coerce b2 into a vector (column convert to roll)
+b2
+```
+
+```{r}
+# inner product dot(e,f) = e'f
+e <- floor(20*runif(4))
+f <- floor(20*runif(4))
+e
+```
+
+```{r}
+f
+```
+
+```{r}
+crossprod(e,f)
+```
+
+```{r}
+sum(e*f)
+```
+
+```{r}
+t(e)%*%f #transfer e crossprod f?
+```
+
+```{r}
+# outer product
+outer(e,f,"*")
+```
+
+```{r}
+outer(e,f,">")
+```
+
+```{r}
+#using automatic coersion
+outer(e,f,">")*1
+```
+
+
+
+## Exercise 1 Vectors
 
 
 1. Create the vectors: 
+
 (a) (1,2,3,...,19,20) 
+```{r e1q1}
+
+```
 (b) (20,19,...,2,1) 
 (c) (1,2,3,...,19,20,19,18,...,2,1) 
 (d) (4,6,3) and assign it to the name tmp. 
