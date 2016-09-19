@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2"
-author: "munan"
+author: "Munan Hou"
 date: "September 16, 2016"
 output: html_document
 ---
@@ -538,12 +538,198 @@ h <- c(yVec[i])
 h
 ```
 
+8. By using the function "cumprod" or otherwise, calculate 1+2/3+2/3*4/5+2/3*4/5*6/7+ ... +2/3*4/5* ... *38/39
+
+```{r}
+i <- c(1:19)
+a <- cumprod(2*i)
+b <- cumprod(2*i+1)
+j <- 1+sum(a[i]/b[i])
+j
+```
 
 
+## Exercise 2 Matrices
 
 
+1.(a)
+
+```{r}
+A <- matrix(data = c(1,1,3,5,2,6,-2,-1,-3), nrow = 3, byrow = TRUE) 
+A
+```
+
+```{r}
+A%*%A%*%A
+```
+
+(b)
+
+```{r}
+Ab <- A
+Ab[7:9] <- Ab[4:6]+A[7:9]
+Ab
+```
 
 
+2.
+
+```{r}
+b <- c(10, -10, 10)
+B <- matrix(data = c(rep(b, time=15)), nrow = 15, byrow = TRUE)
+B
+```
+
+```{r}
+BT <- t(B) #Transfer B
+BT
+```
+
+```{r}
+BT %*% B
+```
 
 
+3.
+
+```{r}
+matE <- matrix(data = seq(0, 0, length=36), nrow = 6, byrow = TRUE)
+matE
+row(matE)
+```
+
+```{r}
+c <- c(0, 1, 0, 0, 0, 0, 1)
+C <- matrix(data=rep(c, len=36), nrow = 6, byrow = TRUE)
+C
+#or
+#A <- matrix(0, nrow=6, ncol=6, byrow=TRUE)
+#(abs(col(A)-row(A))==1)*1
+```
+
+
+4.
+
+```{r}
+outer(0:4,0:4,"+") #if no "+" then default is multiplication
+```
+
+
+5.
+(a)
+
+```{r}
+outer(0:4,0:4,"+") %% 5
+```
+
+(b)
+
+```{r}
+outer(0:9,0:9,"+") %% 10
+```
+
+(c)
+
+```{r}
+outer(0:8,9:1,"+") %% 9
+```
+
+6.
+
+```{r}
+A <- abs(outer(0:4,1:5,"-") + 1) + 1
+b <- c(7, -1, -3, 5, 17)
+# solve Ax = b
+x <- solve(A,b)
+x
+```
+
+
+7.
+
+```{r}
+set.seed(75)
+aMat <- matrix( sample(10, size=60, replace=T), nr=6)
+aMat
+```
+
+(a)
+
+```{r}
+c <- (5:10)
+i <- is.element(aMat, c) * 1
+aMatb <- matrix(data = i, nrow = 6, byrow = TRUE)
+aMatb
+```
+
+```{r}
+n1 <- sum(aMatb[1,1:10])
+n2 <- sum(aMatb[2,1:10])
+n3 <- sum(aMatb[3,1:10])
+n4 <- sum(aMatb[4,1:10])
+n5 <- sum(aMatb[5,1:10])
+n6 <- sum(aMatb[6,1:10])
+n <- c(n1, n2, n3, n4, n5, n6)
+n
+```
+
+(b)
+
+```{r}
+i <- is.element(aMat, 7) * 1
+aMatc <- matrix(data = i, nrow = 6, byrow = TRUE)
+aMatc
+```
+
+```{r}
+n1 <- sum(aMatc[1,1:10])
+n2 <- sum(aMatc[2,1:10])
+n3 <- sum(aMatc[3,1:10])
+n4 <- sum(aMatc[4,1:10])
+n5 <- sum(aMatc[5,1:10])
+n6 <- sum(aMatc[6,1:10])
+n <- c(n1, n2, n3, n4, n5, n6)
+n
+```
+
+```{r}
+is.element(n, 2)*1
+```
+
+(c)
+
+```{r}
+
+```
+
+
+8.
+
+(a)
+
+```{r}
+i <- c(1:20)
+j <- c(1:5)
+sum((i^4)/(3+j))
+```
+
+(b)
+
+```{r}
+i <- c(1:20)
+j <- c(1:5)
+sum((i^4)/(3+i*j))
+```
+
+(c)
+
+```{r}
+sum <- 0
+for (i in 1:20) {
+  for (j in 1:i) {
+    sum <- sum + (i^4)/(3+i*j)
+  }
+}
+sum
+```
 
