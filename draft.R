@@ -236,6 +236,57 @@ sapply(sb,FUN = "-")
 apply(sb,1,"sum") #summary by each row
 apply(sb,2,"sum") #summary by each column
 ?apply
+??apply
+
+#class note
+#data from usda website https://quickstats.nass.usda.gov/
+
+dir()
+data <- read.csv(file = "B1952F63-B856-3C48-BF5E-7F3ADF2E795D.csv")
+
+agdata <- data
+length(agdata$County[agdata$County==NA])
+
+data <- read.csv(file = "B1952F63-B856-3C48-BF5E-7F3ADF2E795D.csv", stringsAsFactors = )
+
+
+#use of "APPLY"
+m <- matrix(c(1:10,11:20), nrow=10, ncol=2)
+m
+
+apply(m,1,mean) #m is data, 1 is dimension, i.e. row, mean is the function
+
+??magrittr
+
+library(magrittr)
+
+m %>% apply(1, mean)
+m %>% apply(1, mean) %>% sum()
+
+m %>% apply(2, mean)
+
+
+#alt-shift-k  so cntrl-shift-m
+
+
+#how about lists? lappaly -- but BEWARE it returns lists
+
+myList <- list(A = matrix(1:12,4), b = c(20,3,7), C = matrix(7,5,10))
+myList
+
+b <- myList %>% lapply(sum)
+b
+?lapply
+
+
+
+
+
+
+
+
+
+
 
 
 
