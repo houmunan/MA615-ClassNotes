@@ -195,3 +195,54 @@ col(A)
 
 #try not using any FOR loops cause toooooo slow
 
+
+
+
+
+
+
+
+
+
+
+
+
+#Class 9.19.2016 MON
+
+dir() #List the files under your repository directory location?? wtf
+
+#> dir()
+#[1] "1.Rmd"                 "Assignment 2.Rmd"      "Assignment_2.html"     "Class 2 outline.Rmd"  
+#[5] "class 9.12.2016.R"     "class 9.12.2016.Rproj" "class 9.16.2016.R"     "draft.html"           
+#[9] "draft.R"
+
+data <- read.csv("blue2.csv", header = TRUE, stringsAsFactors = FALSE)
+
+datacars <- mtcars
+
+#clean up data 接下来
+
+
+
+
+#Class 9.21.2016 WED
+
+#sapply(some matrix) merge each row into one row
+sb <- matrix(c(1,2,3,4,2,3,4,5,3,4,5,6,4,5,6,7), nrow = 4, byrow = TRUE)
+sb
+sapply(sb,FUN = "+")
+sapply(sb,FUN = "-")
+
+apply(sb,1,"sum") #summary by each row
+apply(sb,2,"sum") #summary by each column
+?apply
+
+
+
+
+
+
+
+
+
+

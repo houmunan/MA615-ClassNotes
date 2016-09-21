@@ -63,7 +63,7 @@ log(e3)
 %%    Modulus, binary
 %/%   Integer divide, binary
 %*%   Matrix product, binary
-%o%   Outer product, binary
+%o%   Outer product, binary 
 %x%   Kronecker product, binary
 %in%  Matching operator, binary (in model formulae: nesting)
 <     Less than, binary
