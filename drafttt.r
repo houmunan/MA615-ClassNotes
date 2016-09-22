@@ -131,3 +131,58 @@ norm.ci <- function (n, mu, sigma, alpha = .05) {
 sc <- apply(s, 1, function (r) norm.ci(length))
 
 
+
+
+
+
+#2016.9.22 MA 589 Classnote 讲溢出和丧失精确度的
+
+1 == 3 * 1/3
+#[1] TRUE
+1 == 3 * (4/3 - 1)
+#[1] FALSE
+
+x <- 0; for (i in 1:10) x <- x+.1 ### FOR LOOP
+x
+
+x == 1
+print(x, digits=19)
+sprintf("%a", x)
+sprintf("%a", 1)
+#[1] "0x1p+0"
+x <- 1e-16
+x - x + 1 == x + 1 - x
+#[1] FALSE
+sprintf("%a", x+1)
+sprintf("%a", 1-x)
+sprintf("%a", 2^53)
+2^53 == 2^53 + 1
+2^53 == 2^53 + 1.1
+2^53 + 2 == 2^53 + 1.1
+sprintf("%a", 2^53 + 1)
+
+
+
+
+
+x <- rnorm(10)
+y <- 1 + 2 * x + rnorm(10)
+plot(x, y)
+l <- lm(y ~ x)
+summary(l)
+X <- model.matrix(l)
+X
+
+qx <- qr(X)
+qx
+
+qr.solve(qx, y)
+coef(l)
+#same output
+
+R <- qr.R(qx)
+backsolve(R, qr.qty(qx,y))
+Q <- qr.Q(qx)
+Q
+
+apply(Q,1,function(x) sum(x * x))
