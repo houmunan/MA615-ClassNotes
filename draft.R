@@ -225,6 +225,13 @@ datacars <- mtcars
 
 
 
+
+
+
+
+
+
+
 #Class 9.21.2016 WED
 
 #sapply(some matrix) merge each row into one row
@@ -289,7 +296,23 @@ b
 
 
 
+#Class 9.23.2016 FRI
 
+
+sum <- 0
+c <- c(2,3,pi,4)
+for (i in 1:24) {
+  for (j in 1:4) {
+    sum <- sum + (cos(i * pi * c[j]))
+  }
+}
+sum
+
+i <- 1:24
+j <- c(2,3,pi,4)
+c <- outer(1:24, c(2, 3, pi, 4), "*")
+m <- cos(c*pi)
+sum(m)
 
 
 
