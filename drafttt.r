@@ -193,7 +193,101 @@ apply(Q,1,function(x) sum(x * x))
 
 
 
-#2016.9.29 MA 589 Classnote
+#2016.10.04 TUE MA 589 Classnote
+
+x <- 1
+f <- function () {x <- 100}
+f()
+x
+
+f <- function () {x <<- 100}
+f()
+x
+
+environment(f)
+x <- 1
+g <- function(){x <- 10; f(); print(x)}
+g()
+x
+
+f
+environment(f)
+environment(f) <- new.env()
+environment(f)
+environment(f)$x <- 1
+x <- 1
+f()
+x
+environment(f)$x
+#以上是设置特定环境的方法，在特定环境里x取值变得不同
+
+f <- local({x <- 1; function() x <<- 100})
+environment(f)$x
+x
+#以上是重新设置为local
+
+f()
+x
+environment(f)$x
+
+counter <- local({c <- 0; function() {c <<- c + 1; print(c)}})
+counter()
+#以上是counter
+
+
+randu <- local({
+  seed <- 1
+  a <- 2 ^ 16 + 3
+  m <- 2 ^ 31
+  function() {
+    seed <<- (a ^ seed) %% m
+    seed
+  }
+})
+#以上是randu的用法
+randu()
+randu()
+randu()
+
+
+
+randu <- local({
+  Rn <- 1
+  a <- 2 ^ 16 + 3
+  m <- 2 ^ 31
+  function(unif = TRUE){
+    Rn <<- (a * Rn) %% m
+    if (unif) Rn / m else Rn
+  }
+})
+#以上是randu的用法2
+randu()
+randu()
+randu()
+
+
+
+lehmer <- function(a, m, seed = 1){
+  local({
+    Rn <- seed
+    function(unif = TRUE){
+      Rn <<- (a * Rn) %% m
+      if (unif) Rn / m else Rn
+    }
+  })
+}
+randul <- lehmer(2 ^ 16 + 3, 2 ^ 31)
+#以上是lehmer的用法
+randul()
+randul()
+randul()
+
+
+
+
+
+#删除对象
+rm(Randul)
 
 
 
