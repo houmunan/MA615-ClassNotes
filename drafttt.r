@@ -186,3 +186,21 @@ Q <- qr.Q(qx)
 Q
 
 apply(Q,1,function(x) sum(x * x))
+
+
+
+
+
+
+
+#2016.9.29 MA 589 Classnote
+
+
+
+
+
+
+
+
+
+

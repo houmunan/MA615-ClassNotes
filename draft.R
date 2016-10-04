@@ -320,3 +320,80 @@ sum(m)
 
 
 
+
+#Class 10.3.2016 MON class note
+
+#ggplot2, writing functions
+#ggplot2 <- <- <- <- <- <- <- <- <- 
+#Wed assignments
+
+
+#functions
+
+func.name <- function(inputs){
+  #-your staff goes here-
+  return()
+}
+
+#example
+
+hi <- function(){
+  "hello there"
+}
+
+hii <- function(n){
+  a = rep(x = "hello",n)
+  print(a)
+  b = runif(n)
+  return(b)
+}
+
+hii(20)
+
+#ggplot2
+#this package simply start of saying 
+install.packages("munsell")
+install.packages("labeling")
+library(ggplot2)
+library(labeling)
+
+
+ggplot(Orange, aes(x=circumference, y=age)) + geom_point() + geom_smooth(method = lm)
+
+model <- lm(formula = )
+
+
+p1 <- ggplot(model, aes(.fitted, .resid))+geom_point()
+p1 <- p1+stat_smooth(method="loess")+geom_hline(yintercept = 0, col="red", linetype="dashed")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
