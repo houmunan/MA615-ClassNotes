@@ -375,7 +375,181 @@ p1 <- p1+stat_smooth(method="loess")+geom_hline(yintercept = 0, col="red", linet
 
 
 
+#Class 13 10.5.2016 WED class note
 
+#############
+#summ 1(a).R#
+#############
+
+summ = function(x){
+  # Note that I have added a message to stop().  I haven't been able to reproduce
+  # the message was saw in class.
+  if(is.numeric(x)==F)stop("Invalid input. summ() only takes numeric vectors.")
+  return(list(mean(x),median(x),var(x)))
+}
+
+
+## test with z and z1.  z produces values and z1 stops the program.
+
+z <- c(1,2,3,4,5,6,7,8,9)
+
+z1 <- "how about a mean?"
+
+
+#############
+#rand 1(d).R#
+#############
+
+library(ggplot2)
+
+
+# random walk function
+rands <- function(k){
+  # check to make sure input is an integer.
+  k1 = as.integer(k)
+  if(k1 != k)stop('rands() requires an integer value to start.')
+  
+  # initialize i and x
+  i=1
+  x=0
+  while(x[i] != k){
+    if(runif(1)<.5)D = 1
+    else D = -1
+    i = i+1
+    x[i] = x[i-1]+ D
+    
+  }
+  return(data.frame(x))
+}
+
+## try it with 11
+set.seed(10)
+ser <- data.frame(rands(11))
+t <- 1:length(ser$x)
+qplot(t,x, data=ser, geom="line") #qplot: quick plot, simple version of qqplot
+
+
+## try it with "hello"
+
+ser <-data.frame("hello")
+
+## try it with 3.4
+
+ser <- data.frame(3.4)
+
+
+
+rands(ser)
+
+
+
+#########
+# ma3.R #
+#########
+
+
+set.seed(10)
+
+rand <- rnorm(20)
+
+
+ma3 <- function(x)
+{
+  #check for size and type
+  r=length(x) 
+  x=c(x,0,0,0,x,0,0,0,x)
+  x=matrix(x, ncol = r+2, nrow = 3, byrow = TRUE)
+  
+  return(as.vector(colMeans(x)))
+  
+}
+
+mov <- ma3(rand)
+# acf(rand)   auto correlation function
+# pacf(mov)   partial acf
+# pacf(rand)
+# acf(mov)
+
+
+
+##################
+#exp-poi-gam(1).R#
+##################
+
+
+library(ggplot2)
+library(qualityTools)
+
+
+# create a vector of w exponential waiting times with lambda = lam
+
+wait <- function(w,lam){
+  a = NULL
+  for(i in 1:w){
+    a = c(a,rexp(1,rate = lam))
+  }
+  return(a)
+}
+
+
+
+
+# create a vector of exponential waiting times which total t <= Max with lambda = lam
+
+wait.until <- function(Max,lam){
+  # set.seed(50)
+  time = 0
+  a = NULL
+  while(time < Max){
+    inter = rexp(1,lam)
+    a = c(a,inter)
+    time = time + inter
+  }
+  return(a[1:(length(a)-1)])  ##test w seed ## haha use ()
+}
+
+
+# now simulate the number of events to show that the number of events divided by
+# exponential waiting times are Poisson distributed
+# (don't forget to comment out the "set.seed")
+
+poi.test <- function(rep, Max, lam){
+  a = NULL
+  for(i in 1:rep){
+    q = wait.until(Max,lam)
+    a = c(a,length(q))
+  }
+  return(a)
+}
+
+
+# now simlate the waiting time for k events to occur with lambda = lam
+
+wait.for <- function(k, lam){
+  time = 0
+  count = 0
+  a = NULL
+  while(count < k){
+    inter=rexp(1,lam)
+    count = count + 1
+    time = time+inter
+  }
+  
+  return(time)
+} 
+
+
+
+gam.test <-function(rep, max.e, lam ){
+  a=NULL
+  for (i in 1:rep){
+    t = wait.for(max.e,lam)
+    a = c(a,t)
+    
+  }
+  
+  return(a)
+}
 
 
 
