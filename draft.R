@@ -568,6 +568,61 @@ gam.test <-function(rep, max.e, lam ){
 
 
 
+##Class 13 10.7.2016 FRI class note Assignment 4 note
+
+left <- function(x){
+  return(x^2 + 4^x - 7)
+}
+
+right <- function(x){
+  return(x^2 - 4^x - 7)
+}
+
+combo <- function(x){
+  if(x<0){return(left(x))}
+  else if(x >= 0 & x < 2){return(mod(x))}
+  else if(x >= 2){return(right(x))}
+  else(stop("yo"))
+}
+
+
+four24 <- function(x, plot = FALSE){
+  loops = length(x)
+  out = rep(0,loops)
+  for(i in 1:loops){
+    if (x[i] <= -4 | x[1] >= 4) {
+      #warn .... [TRUNCATED]
+      warning("input values outside the range -4<x<4 are skipped")
+      out[i] = NA
+      next
+    }
+  out[i] = combo(x[i])
+  }
+  if(plot==TRUE){
+    plot(out,na.omit)
+  }
+  return(out)
+}
+
+four24(seq(-4, 4, .5), plot = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
