@@ -66,6 +66,10 @@ nchar(3)
 nchar(452.22)
 #[1] 6  长度包含小数点和小数点后的位数
 nchar(y)
+#Will not work with "factor"
+ouch
+
+
 
 
 
