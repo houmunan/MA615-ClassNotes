@@ -609,7 +609,6 @@ four24(seq(-4, 4, .5), plot = TRUE)
 
 
 
-
 14.4/(sqrt((1.4)^2*52))
 100/52
 
@@ -626,3 +625,13 @@ four24(seq(-4, 4, .5), plot = TRUE)
 
 
 
+
+
+
+
+
+##Class 14 10.7.2016 MON(TUE) class note midterm project note
+
+library(jsonlite)
+?jsonlite
+dir()
