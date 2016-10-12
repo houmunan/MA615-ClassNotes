@@ -1,0 +1,735 @@
+---
+title: "Assignment 2"
+author: "Munan Hou"
+date: "September 16, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Exercise 0 Basic Arithmetic
+
+
+1. Assignment, variables
+Try some simple commands
+
+```{r e0q1}
+a <- 2
+b <- 50
+c <- 3
+
+a+b
+```
+
+```{r}
+b/a
+```
+
+```{r}
+50%%3
+```
+
+```{r}
+sin(0)
+```
+
+```{r}
+cos(0)
+```
+
+```{r}
+sin45 <- sin(pi/4)
+4*asin(sin45)
+```
+
+```{r}
+e3 <- exp(3)
+log(e3)
+```
+
+-     Minus, can be unary or binary
++     Plus, can be unary or binary
+!     Unary not
+~     Tilde, used for model formulae, can be either unary or binary
+?     Help
+:     Sequence, binary (in model formulae: interaction)
+*     Multiplication, binary
+/     Division, binary
+^     Exponentiation, binary
+%x%   Special binary operators, x can be replaced by any valid name
+%%    Modulus, binary
+%/%   Integer divide, binary
+%*%   Matrix product, binary
+%o%   Outer product, binary 
+%x%   Kronecker product, binary
+%in%  Matching operator, binary (in model formulae: nesting)
+<     Less than, binary
+>     Greater than, binary
+==    Equal to, binary
+>=    Greater than or equal to, binary
+<=    Less than or equal to, binary
+&     And, binary, vectorized
+&&    And, binary, not vectorized
+|     Or, binary, vectorized
+||    Or, binary, not vectorized
+<-    Left assignment, binary
+->    Right assignment, binary
+$     List subset, binary
+  
+
+2. Try some basic Vector operations
+
+```{r e0q2}
+# create 
+a_vec <- c(3, 50, 5, 6, 10, 40, 20, 2, 100, 30, 25, 80) 
+# length 
+length(a_vec)
+```
+
+```{r}
+# sum
+sum(a_vec)
+```
+
+```{r}
+# cumulative sum
+cumsum(a_vec)
+```
+
+```{r}
+# summary statistics
+summary(a_vec)
+```
+
+```{r}
+# variance
+var(a_vec)
+```
+
+```{r}
+# is it reatlly a vector?
+str(a_vec)
+```
+
+```{r}
+# was that not clear?
+is.vector(a_vec)
+```
+
+```{r}
+# assign the 5th element of a_vec to d
+d <- a_vec[5]
+a_vec
+```
+
+```{r}
+# what does this mean?
+length(d)
+```
+
+```{r}
+# Really? Well, ...
+is.vector(d)
+```
+
+```{r}
+# how about random numbers?
+random_vec <- runif(20)
+length(random_vec)
+```
+
+```{r}
+random_vec
+```
+
+```{r}
+# what if random_vec was really big?
+random_vec_big <- runif(10000)
+length(random_vec_big)
+```
+
+```{r}
+head(random_vec_big)
+```
+
+```{r}
+# need more than 6?
+head(random_vec_big, 20)
+```
+
+```{r}
+# too many decimal places?
+options(digits = 2)
+tail(random_vec_big)
+```
+
+```{r}
+# What if I want my random series to be repeatable?
+set.seed(2)
+r <- runif(30)
+head(r,10)
+```
+
+```{r}
+r1 <- runif(20)
+head(r1,10)
+```
+
+```{r}
+set.seed(2)
+s <- runif(10)
+s
+```
+
+```{r}
+# not enough digits?
+options(digits = 4)
+head(r)
+```
+
+```{r}
+head(s)
+```
+
+```{r}
+# can I get a picture of that?
+plot(r)
+```
+
+```{r}
+# that's not very helpful. Histogram.
+hist(r)
+```
+
+```{r}
+# doesn't look uniform? increase the sample size
+hist(random_vec_big)
+```
+
+All these blocks of R may not be what you need.
+Remember a_vec? Sure, avec is (3, 50, 5, 6, 10, 40, 20, 2, 100, 30, 25, 80). Here’s a_vec’s mean 30.9167.
+Wow – a_vec is a strange set of data, what does it look like?
+
+```{r}
+boxplot(a_vec)
+```
+
+
+3. Finally, let’s look at matrice, lists, and data.frames
+
+```{r}
+# make a random matrix 
+A <- matrix(data = floor(30*runif(16)), nrow = 4) 
+A
+```
+
+```{r}
+# how big is the matrix?
+dim(A)
+```
+
+```{r}
+# Let's make a vector to multiply by A
+b <- floor(20*runif(dim(A)[2]))
+b
+```
+
+```{r}
+# solve Ax = b
+x <- solve(A,b)
+x
+```
+
+```{r}
+b1 <- A%*%x
+b1
+```
+
+```{r}
+b2 <- as.vector(A%*%x) #coerce b2 into a vector (column convert to roll)
+b2
+```
+
+```{r}
+# inner product dot(e,f) = e'f
+e <- floor(20*runif(4))
+f <- floor(20*runif(4))
+e
+```
+
+```{r}
+f
+```
+
+```{r}
+crossprod(e,f)
+```
+
+```{r}
+sum(e*f)
+```
+
+```{r}
+t(e)%*%f #transfer e crossprod f?
+```
+
+```{r}
+# outer product
+outer(e,f,"*")
+```
+
+```{r}
+outer(e,f,">")
+```
+
+```{r}
+#using automatic coersion
+outer(e,f,">")*1
+```
+
+
+
+## Exercise 1 Vectors
+
+
+1. Create the vectors: 
+
+(a) (1,2,3,...,19,20) 
+
+```{r e1q1}
+e1q1a <- c(1:20)
+```
+
+(b) (20,19,...,2,1)
+
+```{r}
+e1q1b <- c(20:1)
+```
+
+(c) (1,2,3,...,19,20,19,18,...,2,1) 
+
+```{r}
+e1q1c <- c(c(1:20),c(19:1))
+head(e1q1c,39)
+```
+
+(d) (4,6,3) and assign it to the name tmp. 
+
+```{r}
+tmp <- c(4,6,3)
+```
+
+For parts (e), (f) and (g) look at the help for the function rep. 
+
+(e) (4,6,3, 4,6,3,...,4,6,3) where there are 10 occurrences of 4. 
+
+```{r}
+e1q1e <- c(rep(tmp, time=10))
+e1q1e
+```
+
+(f) (4,6,3, 4,6,3,...,4,6,3,4) where there are 11 occurrences of 4, 10 occurrences of 6 and 10 occurrences of 3. 
+
+```{r}
+e1q1f <- c(rep(tmp, length=31))
+e1q1f
+```
+
+(g) (4,4,...,4, 6,6,...,6, 3,3,...,3) where there are 10 occurrences of 4, 20 occurrences of 6 and 30 occurrences of 3.
+
+```{r}
+e1q1g <- c(rep(tmp, c(10,20,30)))
+e1q1g
+```
+
+
+2. Create a vector of the values of e^x*cos(x) at x = 3,3.1,3.2,...,6. Make a plot of the multiplicants and the product.
+
+```{r}
+par(new=TRUE)
+x <- seq(3,6,by=0.1)
+prod <- exp(x)*cos(x)
+plot(prod, col="blue", type="l") #(type set to "line")
+points(cos(x),col="red")
+points(exp(x),col="green")
+```
+
+
+3. Create the following vectors:
+
+(a) (0.1^3*0.2^1, 0.1^6*0.2^4, ... , 0.1^36*0.2^34) 
+
+```{r}
+x <- seq(3, 36, by=3)
+y <- seq(1, 34, by=3)
+a <- (0.1^x)*(0.2^y)
+a
+```
+
+(b) (2, (2^2)/2, (2^3)/3, ... , (2^25)/25)
+
+```{r}
+x <- seq(1:25)
+b <- (2^x)/x
+b
+```
+
+
+4. Calculate the following
+
+(a) summary of (i^3+4*i^2), where i ranges from 10 to 100.
+
+```{r}
+i <- c(10:100)
+a <- sum(i^3+4*i^2)
+a
+```
+
+(b) summary of ((2^i)/i + (3^i)/(i^2)), where i ranges from 1 to 25.
+
+```{r}
+i <- (1:25)
+b <- sum((2^i)/i + (3^i)/(i^2))
+b
+```
+
+
+5. Use the function "paste"" to create the following character vectors of length 30: 
+
+(a) ("label 1", "label 2", ....., "label 30"). Note that there is a single space between label and the number following. 
+
+```{r}
+paste("label", 1:30)
+```
+
+(b) ("fn1", "fn2", ..., "fn30"). In this case, there is no space between fn and the number following. 
+
+```{r}
+paste0("fn", 1:30)
+```
+
+
+6. Execute the following lines which create two vectors of random integers which are chosen with replacement from the integers 0, 1, ..., 999. Both vectors have length 250. 
+
+```{r}
+set.seed(50)
+xVec <- sample(0:999, 250, replace=T)
+yVec <- sample(0:999, 250, replace=T) 
+```
+
+Supposex = (x1,x2,...,xn) denotes the vector xVec andy = (y1,y2,...,yn) denotes the vector yVec.
+
+(a) Create the vector (y2 −x1,...,yn −xn−1). Plot the vector.
+
+```{r}
+yVeca <- yVec[-1]#delete the first element
+xVeca <- xVec[-length(xVec)]#dropping the last one, can also use"-250" instead of "-length"
+dVec <- yVeca - xVeca
+plot(dVec, col="red")
+```
+
+(b) Create the vector (sin(y1)/cos(x2), sin(y2)/cos(x3), sin(yn-1)/cos(xn))
+
+```{r}
+yVecb <- yVec[-length(yVec)]
+xVecb <- xVec[-1]
+eVec <- sin(yVecb)/cos(xVecb)
+eVec
+```
+
+(c) Create the vector (x1 +2x2 −x3, x2 +2x3 −x4, ... , xn−2 +2xn−1 −xn). 
+
+```{r}
+xVecc1 <- xVec[-c((length(xVec)-1):length(xVec))]
+xVecc2 <- xVec[-c(1, length(xVec))]
+xVecc3 <- xVec[-c(1, 2)]
+fVec <- xVecc1 + 2*xVecc2 - xVecc3
+fVec
+```
+
+(d) Calculate summary of (e^(-x(i-1)))/(xi+10) as i goes from 1 to n-1.
+
+```{r}
+e <- 2.718281828459
+xVecd1 <- xVec[-1]
+xVecd2 <- xVec[-length(xVec)]
+gVec <- (e^(-xVecd1))/(xVecd2+10)
+gVec
+```
+
+
+7. This question uses the vectors "xVec"" and "yVec"" created in the previous question and the functions "sort"", "order", "mean", "sqrt", "sum" and "abs".
+
+```{r}
+set.seed(50)
+xVec <- sample(0:999, 250, replace=T)
+yVec <- sample(0:999, 250, replace=T)
+```
+
+(a) Pick out the values in yVec which are > 600. Make a chart that shows the data points with values > 600 as a subset.
+
+```{r}
+plot(yVec, col="red")
+bVec <- yVec[yVec>600]
+points(bVec, col="green")
+bVec
+```
+
+(b) What are the index positions in yVec of the values which are > 600?
+
+```{r}
+i <- (1:250)
+c <- (601:999)
+n <- c(is.element(yVec[i], c)*1)
+n
+```
+
+(c) What are the values in xVec which correspond to the values in yVec which are > 600? (By correspond, we mean at the same index positions.) 
+
+```{r}
+m <- xVec*n
+m
+```
+
+(d) Create the vector (sqrt(|x1 - xbar|), sqrt(|x2 - xbar|), ... , sqrt(|xn - xbar|)) where xbar denotes the mean of the vector x = (x1, x2, ... , xn). Make a chart that shows the xVec and the vector you created.
+
+```{r}
+i <- (1:250)
+xbar <- mean(xVec[i])
+xbar
+v <- c(sqrt(abs(xVec[i] - xbar)))
+v
+```
+
+(e) How many values in yVec are within 200 of the maximum value of the terms in yVec?
+
+```{r}
+i <- (1:250)
+q <- max(yVec[i]) - 200
+q
+c <- (q:max(yVec[i]))
+n <- c(is.element(yVec[i], c)*1)
+sum(n[i])
+```
+
+(f) How many numbers in xVec are divisible by 2? (Note that the modulo operator is denoted %%.)
+
+```{r}
+i <- (1:250)
+z <- c(is.element(xVec[i]%%2,0)*1)
+sum(z[i])
+```
+
+(g) Sort the numbers in the vector xVec in the order of increasing values in yVec. Make a chart.
+
+```{r}
+g <- sort(xVec, decreasing=FALSE)
+g
+```
+
+(h) Pick out the elements in yVec at index positions 1,4,7,10,13,.... Make a chart.
+
+```{r}
+i <- seq(1, 250, by=3)
+h <- c(yVec[i])
+h
+```
+
+8. By using the function "cumprod" or otherwise, calculate 1+2/3+2/3*4/5+2/3*4/5*6/7+ ... +2/3*4/5* ... *38/39
+
+```{r}
+i <- c(1:19)
+a <- cumprod(2*i)
+b <- cumprod(2*i+1)
+j <- 1+sum(a[i]/b[i])
+j
+```
+
+
+## Exercise 2 Matrices
+
+
+1.(a)
+
+```{r}
+A <- matrix(data = c(1,1,3,5,2,6,-2,-1,-3), nrow = 3, byrow = TRUE) 
+A
+```
+
+```{r}
+A%*%A%*%A
+```
+
+(b)
+
+```{r}
+Ab <- A
+Ab[7:9] <- Ab[4:6]+A[7:9]
+Ab
+```
+
+
+2.
+
+```{r}
+b <- c(10, -10, 10)
+B <- matrix(data = c(rep(b, time=15)), nrow = 15, byrow = TRUE)
+B
+```
+
+```{r}
+BT <- t(B) #Transfer B
+BT
+```
+
+```{r}
+BT %*% B
+```
+
+
+3.
+
+```{r}
+matE <- matrix(data = seq(0, 0, length=36), nrow = 6, byrow = TRUE)
+matE
+row(matE)
+```
+
+```{r}
+c <- c(0, 1, 0, 0, 0, 0, 1)
+C <- matrix(data=rep(c, len=36), nrow = 6, byrow = TRUE)
+C
+#or
+#A <- matrix(0, nrow=6, ncol=6, byrow=TRUE)
+#(abs(col(A)-row(A))==1)*1
+```
+
+
+4.
+
+```{r}
+outer(0:4,0:4,"+") #if no "+" then default is multiplication
+```
+
+
+5.
+(a)
+
+```{r}
+outer(0:4,0:4,"+") %% 5
+```
+
+(b)
+
+```{r}
+outer(0:9,0:9,"+") %% 10
+```
+
+(c)
+
+```{r}
+outer(0:8,9:1,"+") %% 9
+```
+
+6.
+
+```{r}
+A <- abs(outer(0:4,1:5,"-") + 1) + 1
+b <- c(7, -1, -3, 5, 17)
+# solve Ax = b
+x <- solve(A,b)
+x
+```
+
+
+7.
+
+```{r}
+set.seed(75)
+aMat <- matrix( sample(10, size=60, replace=T), nr=6)
+aMat
+```
+
+(a)
+
+```{r}
+c <- (5:10)
+i <- is.element(aMat, c) * 1
+aMatb <- matrix(data = i, nrow = 6, byrow = TRUE)
+aMatb
+```
+
+```{r}
+n1 <- sum(aMatb[1,1:10])
+n2 <- sum(aMatb[2,1:10])
+n3 <- sum(aMatb[3,1:10])
+n4 <- sum(aMatb[4,1:10])
+n5 <- sum(aMatb[5,1:10])
+n6 <- sum(aMatb[6,1:10])
+n <- c(n1, n2, n3, n4, n5, n6)
+n
+```
+
+(b)
+
+```{r}
+i <- is.element(aMat, 7) * 1
+aMatc <- matrix(data = i, nrow = 6, byrow = TRUE)
+aMatc
+```
+
+```{r}
+n1 <- sum(aMatc[1,1:10])
+n2 <- sum(aMatc[2,1:10])
+n3 <- sum(aMatc[3,1:10])
+n4 <- sum(aMatc[4,1:10])
+n5 <- sum(aMatc[5,1:10])
+n6 <- sum(aMatc[6,1:10])
+n <- c(n1, n2, n3, n4, n5, n6)
+n
+```
+
+```{r}
+is.element(n, 2)*1
+```
+
+(c)
+
+```{r}
+
+```
+
+
+8.
+
+(a)
+
+```{r}
+i <- c(1:20)
+j <- c(1:5)
+sum((i^4)/(3+j))
+```
+
+(b)
+
+```{r}
+i <- c(1:20)
+j <- c(1:5)
+sum((i^4)/(3+i*j))
+```
+
+(c)
+
+```{r}
+sum <- 0
+for (i in 1:20) {
+  for (j in 1:i) {
+    sum <- sum + (i^4)/(3+i*j)
+  }
+}
+sum
+```
+
