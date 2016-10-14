@@ -712,3 +712,6 @@ rm(list=ls())
 load('myworkspace.RData')
 
 
+#plyr package 拆分list，转换vector matrix list之类的
+install.packages("plyr")
+library("plyr")

@@ -291,6 +291,33 @@ rm(Randul)
 
 
 
+letters
+LETTERS
+
+
+array(data = 1:12, dim = c(2,3,4)) #dim三个数：行，列，array数量
+
+
+?require
+
+
+ggplot(data = faithful, aes(x=eruptions, y=waiting)) + geom_point() + stat_smooth()
+ggplot(data = faithful, aes(x=eruptions, y=waiting)) + geom_point() + stat_smooth(method=lm)
+
+
+
+install.packages("ggthemes")
+require("ggthemes")
+?ggthemes
+
+
+
+
+
+
+#2016.10.13 TUE MA 589 Classnote R session
+
+#Simulation, sampling, LaPlace
 
 
 
@@ -298,3 +325,14 @@ rm(Randul)
 
 
 
+
+
+
+
+
+
+
+x <- c(1:10)
+mean(x)
+median(x)
+var(x)
