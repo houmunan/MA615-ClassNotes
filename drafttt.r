@@ -86,7 +86,7 @@ plot(b)
 #the
 #hell
 #is
-
+#this
 
 
 
@@ -314,25 +314,19 @@ require("ggthemes")
 
 
 
-
 #2016.10.13 TUE MA 589 Classnote R session
 
 #Simulation, sampling, LaPlace
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 x <- c(1:10)
 mean(x)
 median(x)
 var(x)
+
+
+
+##2016.10.18 TUE MA 589 Classnote R session
+
+s <- replicate(1000, mean(g(runif(n))))
+qqnorm(s)
+qqline(s)
