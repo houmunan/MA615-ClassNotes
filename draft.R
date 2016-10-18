@@ -716,4 +716,105 @@ load('myworkspace.RData')
 install.packages("plyr")
 library("plyr")
 
-#Try
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Class 17 10.17.2016 MON class note ggplot2 note
+
+data(mtcars)
+df <- mtcars[,c("mpg", "cyl", "wt")]#subset of mtcars
+
+head(df)
+
+levels(df$cyl) #所有outcome的种类，列出来
+# NULL #因为是numerical，不是factor，要先转化factor
+df$cyl <- as.factor(df$cyl)
+levels(df$cyl)
+
+library(ggplot2) #用ggplot画图
+qplot(x = wt, y = mpg, data = df, geom = c("point"))
+qplot(x = wt, y = mpg, data = df, geom = c("point", "smooth"))
+
+ggplot(data = mtcars, aes(x = wt, y = mpg)) + geom_point()
+ggplot(data = mtcars, aes(x = wt, y = mpg)) + geom_point() + geom_smooth()
+ggplot(data = mtcars, aes(x = wt, y = mpg)) + geom_point() + stat_smooth()
+
+qplot(x = wt, y = mpg, data = df, color = cyl, shape = cyl)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
