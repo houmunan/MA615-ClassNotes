@@ -755,29 +755,73 @@ qplot(x = wt, y = mpg, data = df, color = cyl, shape = cyl)
 
 
 
+##Class 18 10.19.2016 WED discuss note ggvis dplyr leaflet note
+
+install.packages("ggvis")
+library(ggvis)
+
+head(mtcars)
+mtcars$wt
+mtcars$mpg
+
+p <- ggvis(mtcars, x=~wt, y=~mpg)
+layer_points(p)
+layer_points(ggvis(mtcars, x=~wt, y=~mpg))
+
+mtcars %>% ggvis(x=~wt, y=~mpg) %>% layer_points()
+mtcars %>% ggvis(x=~wt, y=~mpg) %>% layer_lines()
+mtcars %>% ggvis(x=~wt, y=~mpg) %>% layer_paths()
+
+mtcars %>% ggvis(x=~factor(cyl), y=~mpg) %>% layer_boxplots()
+
+set.seed(100)
+
+df <- data.frame(x=1:10, y=runif(10), y2=runif(10))
+df
+
+df %>% ggvis(~x, ~y) %>% layer_paths(fill:="red")
+df %>% ggvis(~x, ~y, y2=~y2) %>% layer_ribbons(fill:="blue") #fill gap between to var.
+
+t <- seq(0, 2*pi, length = 100)
+df <- data.frame(x=sin(t), y=cos(t))
+df %>% ggvis(~x, ~y) %>% layer_paths(fill:="brown")
 
 
+df <- data.frame(x=c(1:3), y=c(2,4,3), z=c("X", "y", "z"))
+df %>% ggvis(~x, ~y, text:=~z) %>% layer_text(fontSize=~45, angle:=45) #fontSize, S capital
 
 
+#dplyr
+
+library(dplyr)
+
+mtcars %>% filter(gear>3) %>% ggvis(x=~wt, y=~mpg) %>% layer_points() %>% layer_smooths()
+
+mtcars %>% filter(gear>3) %>% ggvis(x=~wt, y=~mpg, stroke=~gear) %>% layer_points()
+mtcars %>% filter(gear>3) %>% ggvis(x=~wt, y=~mpg, size=~gear) %>% layer_points()
+mtcars %>% filter(gear>3) %>% ggvis(x=~wt, y=~mpg, size=~gear, fill=~am) %>% layer_points()
+mtcars %>% filter(gear>3) %>% ggvis(x=~wt, y=~mpg, size=~gear, fill:="red", shape=~factor(am)) %>% layer_points()
+mtcars %>% filter(gear>3) %>% ggvis(x=~wt, y=~mpg, size=~gear, fill:="red", shape=~factor(am), opacity:=0.4) %>% layer_points()
 
 
+######
 
+mtcars %>% ggvis(~wt, ~mpg, size= input_slider(10,100), opacity= input_slider(0,1)) %>% layer_points()
+mtcars %>% ggvis(~wt) %>% layer_histograms(width= input_slider(0.1,3,step=.05))
+mtcars %>% ggvis(~wt, y= input_select(c("mpg", "am", "gear"), map=as.name)) %>% layer_points()
 
+mtcars %>%
+  ggvis(x=input_select(colnames(mtcars), map=as.name,label='x'),
+        y=input_select(colnames(mtcars), map=as.name,label='y'),
+        size=input_select(colnames(mtcars), map=as.name,label='size'),
+        fill=input_select(colnames(mtcars), map=as.name,label='fill')
+  ) %>% layer_points() %>%
+  add_axis("x", title='x axis') %>%
+  add_axis("y", title='y axis')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+install.packages("leaflet") #grab things from internet and showing in R
+library(leaflet)
+# m=leaflet() %>% ...............................................
 
 
 
