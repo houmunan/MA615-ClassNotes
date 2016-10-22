@@ -1,0 +1,145 @@
+---
+title: "Problem Set 2"
+author: "Munan Hou"
+date: "October 21, 2016"
+output: html_document
+---
+
+#1
+
+```{r read.table}
+data <- read.table("M1_spikes.csv", sep = ",", header = TRUE, fill = TRUE)
+```
+
+```{r subset arrivals}
+cumarrivetime <- subset(data, data$spikes == 1)[,"T"]
+```
+
+```{r plot time series}
+plot(1:max(cumarrivetime), rep(0,max(cumarrivetime)), type = "n")
+abline(v = cumarrivetime)
+```
+
+```{r plotXY}
+XY <- subset(data, data$spikes==1)[,c("X","Y")]
+plot(data$X,data$Y, type="l") + points(XY)
+```
+
+```{rv phi }
+Vphi <- subset(data,data$spikes==1)[,c("V","phi")]
+plot(data$V,data$phi, type="l") + points(Vphi)
+```
+
+#2
+
+```{r function}
+subnum <- function(x){
+  bin <- seq(min(data$phi),max(data$phi),by=(max(data$phi)-min(data$phi))/x)
+  row_count <- c()
+  for (i in 1:(x-1)) {
+    row_count <- c(row_count, nrow(subset(data, data$phi >= bin[i] & data$phi < bin[i+1])))
+  }
+  row_count <- c(row_count, nrow(subset(data, data$phi >= bin[x] & data$phi <= bin[x+1])))
+  return(row_count)
+}
+bin <- seq(min(data$phi),max(data$phi),by=(max(data$phi)-min(data$phi))/100)
+h <- hist(subset(data,data$spikes==1)[,"phi"],breaks = bin, xlab = "Direction")
+```
+
+```{r bincounts}
+bincounts <- subnum(100)
+h$counts <- h$counts/bincounts
+h$xname <- "Direction"
+plot(h)
+```
+
+```{r}
+range <- data.frame("lower.bound" = bin[-1], "upper.bound" = bin[-length(bin)], "freq" = h$counts)
+range <- range[which(range$freq==max(range$freq)),]
+range
+```
+
+As the phi is divided into 100 bins, the most likely direction this neuron is going to fire is in (-2.13486, -2.197675)
+
+#3
+
+```{r likelihood of data ~ f(L(theta preferred)), range of theta preferred}
+lbin <- seq(min(data$phi),max(data$phi), .01)
+lbincounts <- c()
+for (i in 1:length(lbin)){
+  lambda <- 30 + (30 / 16.1) * (cos(data$phi - lbin[i]) * data$V)
+  lbincounts <- c(lbincounts, sum(log(lambda)) - sum(lambda[-1]))
+  }
+fisher <- -(c(0, 0, lbincounts) + c(lbincounts, 0, 0) - 2 * c(0, lbincounts, 0)) / .01^2
+fisher <- fisher[2:(length(fisher) - 1)]
+head(fisher)
+```
+
+
+```{r maximized likelihood}
+mc <- data.frame("phi"=lbin, "logl"=lbincounts, "fisher"=fisher)
+ml <- subset(mc, mc$logl==max(mc$logl))
+ml
+```
+
+```{r 95% C.I.}
+rep(ml$phi, 2) + c(-1.96 * (ml$fisher^-0.5), 1.96 * (ml$fisher^-0.5))
+```
+
+#4
+
+```{r}
+plot(data$T, 30 + 30 * data$V * cos(data$phi - 0.9261) / 16.1, type = "l",xlab = "ms", ylab = "lambdahat")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
