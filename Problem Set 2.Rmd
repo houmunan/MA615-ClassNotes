@@ -1,0 +1,115 @@
+---
+title: "Problem Set 2"
+author: "Munan Hou"
+date: "October 21, 2016"
+output: html_document
+---
+
+#1
+
+```{r read.table}
+data <- read.table("data_spikes.csv", sep = ",", header = TRUE, fill = TRUE)
+```
+
+```{r subset arrivals}
+cumarrivetime <- subset(data, data$spikes == 1)[,"T"]
+```
+
+```{r plot time series}
+plot(1:max(cumarrivetime), rep(0,max(cumarrivetime)), type = "n")
+abline(v = cumarrivetime)
+```
+
+```{r plotXY}
+XY <- subset(data, data$spikes==1)[,c("X","Y")]
+plot(data$X,data$Y, type="l") + points(XY)
+```
+
+```{r}
+Vphi <- subset(data,data$spikes==1)[,c("V","phi")]
+plot(data$V,data$phi, type="l") + points(Vphi)
+```
+
+#2
+
+```{r function}
+subnum <- function(x){
+  bin <- seq(min(data$phi),max(data$phi),by=(max(data$phi)-min(data$phi))/x)
+  row_count <- c()
+  for (i in 1:(x-1)) {
+    row_count <- c(row_count, nrow(subset(data, data$phi >= bin[i] & data$phi < bin[i+1])))
+  }
+  row_count <- c(row_count, nrow(subset(data, data$phi >= bin[x] & data$phi <= bin[x+1])))
+  return(row_count)
+h <- hist(subset(data,data$spikes==1)[,"phi"],breaks = bin, xlab = "Direction")
+}
+```
+
+```{r bincounts}
+bincounts <- subnum(100)
+h$counts <- h$counts/bincounts
+h$xname <- "Direction"
+plot(h)
+```
+
+```{r}
+bin <- seq(min(data$phi),max(data$phi),by=(max(data$phi)-min(data$phi))/100)
+dir <- 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
