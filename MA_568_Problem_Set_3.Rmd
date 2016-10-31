@@ -1,0 +1,13 @@
+---
+title: "MA_568_Problem_Set_3"
+author: "Munan Hou"
+date: "October 31, 2016"
+output: html_document
+---
+
+#1
+
+```{r}
+
+```
+

@@ -828,21 +828,35 @@ library(leaflet)
 
 
 
+##Class 20 10.24.2016 MON
+
+##Class 21 10.26.2016 WED BOOTSTRAP Bootstrap Package:"shiny"
+install.packages("shiny")
+library(shiny)
+
+p11 <- 42/49
+p21 <- 7/12
+p12 <- 7/49
+p22 <- 5/12
+
+ep11 <- 49/61
+ep21 <- 49/61
+ep12 <- 12/61
+ep22 <- 12/61
+
+chisq <- (
+  ((p11 - ep11)^2/ep11)
+  +((p12 - ep12)^2/ep12)
+  +((p21 - ep21)^2/ep21)
+  +((p22 - ep22)^2/ep22)
+  )
+
+chisq
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+(73.5)/(1.79)^2
+(80)/(1.79)^2
 
 
 

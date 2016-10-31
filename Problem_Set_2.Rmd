@@ -89,14 +89,60 @@ rep(ml$phi, 2) + c(-1.96 * (ml$fisher^-0.5), 1.96 * (ml$fisher^-0.5))
 #4
 
 ```{r}
-plot(data$T, 30 + 30 * data$V * cos(data$phi - 0.9261) / 16.1, type = "l",xlab = "ms", ylab = "lambdahat")
+plot(data$T, 30 + 30 * data$V * cos(data$phi - .9301) / 16.1, type = "l",xlab = "time", ylab = "lambdahat")
 ```
 
+#5
 
+```{r original ISIs hist}
+spiketimes <- subset(data,data$spikes==1)
+spiketimes <- spiketimes[,"T"]
+spiketimes
+ISIs <-  c(spiketimes,0)-c(0,spiketimes)
+ISIs <- ISIs[-c(1,length(ISIs))]
+ISIs
+hist(ISIs, xlab = 'ms')
+```
 
+```{r rescale}
+spiketimes <- subset(data,data$spikes==1)
+S <- 30 + 30 * spiketimes$V * cos(spiketimes$phi - .9301) / 16.1
 
+S_mean <- (c(spiketimes$T,0)+c(0,spiketimes$T)) / 2
+S_mean <- S_mean[2:(length(S_mean)-1)] 
 
+st2 <- data[S_mean,c("V","phi")] 
+S_mean <- 30+30*st2$V*cos(st2$phi-.9301) / 16.1 
+b_a <- (spiketimes$T[-1]-spiketimes$T[-length(spiketimes$T)])/1000
 
+S1 <- S[-length(S)] 
+S2 <- S[-1]
+
+re<- (S1+4*S_mean+S2)*b_a/6
+hist(re)
+```
+
+```{r ks plot}
+
+```
+
+#6
+
+```{r}
+acf(re)
+```
+
+#7
+
+```{r}
+cum <- cumsum(re)
+sb <- hist(cum,seq(min(cum)-1,max(cum)+1,1))
+var(sb$counts)/mean(sb$counts)
+```
+
+```{r}
+qgamma(c(0.025,0.975), length(sb$counts)/2, scale = 2/length(sb$counts))
+```
 
 
 
