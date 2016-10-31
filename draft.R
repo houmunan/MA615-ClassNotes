@@ -865,11 +865,263 @@ chisq
 
 
 
+##Class 21 10.31.2016 MON mapping package:“ggmap”
+
+install.packages("ggplot2")
+install.packages("ggmap")
+install.packages("sp")
+install.packages("RgoogleMaps")
+install.packages("ggmap")
+install.packages("ggplot2")
+install.packages("maptools")
+install.packages("datasets")
+install.packages("tigris")
+
+library(ggplot2)
+library(ggmap)
+library(sp)
+library(RgoogleMaps)
+library(ggmap)
+library(ggplot2)
+library(maptools)
+library(datasets)
+library(tigris)
+
+
+################################
+#Kahle-Wickham Fig 1 - step 1.R#
+################################
+
+library(tigris)
+library(sp)
+library(rgeos)
+
+# Dallas, TX census tracts
+
+dfw = tracts(state='TX', county = c('Dallas', 'Tarrant'))
+plot(dfw)
+
+# Houston, TX census tracts
+
+hou = tracts(state='TX', county = 'Harris County')
+plot(hou)
+
+
+# MA census tracts
+
+ma = tracts(state='MA')
+plot(ma)
+
+
+# Houston, TX zip code areas
+
+# uas <- urban_areas()
+# 
+# dfh <- zctas(cb=T, starts_with = "77")
+# houston_ua <- uas[grep("Houston, TX", uas$NAME10), ]
+# hou_zcta <- dfh[as.vector(gIntersects(dfh, houston_ua, byid = TRUE)), ]
+# plot(hou_zcta)
+
+
+# Boston, MA zip code areas
+# 
+# dfb <- zctas(cb=T, starts_with = "02")
+# boston_ua <- uas[grep("Boston, MA", uas$NAME10), ]
+# bos_zcta <- dfb[as.vector(gIntersects(dfb, boston_ua, byid = TRUE)), ]
+# plot(bos_zcta)
 
 
 
 
+########
+#maps.R#
+########
 
+library(sp)
+library(RgoogleMaps)
+library(ggmap)
+library(ggplot2)
+library(maptools)
+library(datasets)
+library(tigris)
+
+
+# figure 2
+murder <- subset(crime, offense == "murder") # the data is from ggmap
+qmplot(lon, lat, data = murder, colour = I('red'), size = I(3), darken = .3)
+
+## from google maps
+# ?geocode
+#
+geocode("the white house")
+qmap("the white house", zoom=18)
+
+
+geocode("Hawaii")
+qmap("Hawaii",zoom=8)
+
+qmap("hanalei",zoom=12)
+qmap("hanalei", zoom = 14)
+qmap("hanalei", zoom = 15)
+geocode(location="02134")
+
+qmap(location="02215", zoom=17)
+
+qmap("hanalei", zoom = 14, source = "stamen", maptype = "watercolor")
+
+# figure 3
+baylor <- "baylor university"
+qmap(baylor, zoom=14)
+qmap(baylor, zoom=14, source="osm")
+
+# figure 4
+set.seed(50)
+df <- round(data.frame(
+  x = jitter(rep(-71.05977, 40), amount = .3),
+  y = jitter(rep( 42.35843, 40), amount = .3)
+), digits = 2)
+map <- get_googlemap('Boston', markers = df, path = df, scale = 1)
+ggmap(map, extent = 'device')
+
+# figure 5
+qmap(baylor, zoom = 14, source = "stamen", maptype = "watercolor")
+qmap(baylor, zoom = 14, source = "stamen", maptype = "toner")
+
+
+paris <- get_map(location="paris")
+str(paris)
+
+# ggplot(aes(x = lon, y = lat), data = fourCorners) +
+#   geom_blank() + coord_map("mercator") +
+#   annotation_raster(ggmap, xmin, xmax, ymin, ymax)
+
+# figure 7
+ggmap(paris, extent = "normal")
+
+
+
+# find a reasonable spatial extent
+qmap('houston', zoom=13)
+#gglocator(2)
+# only violent crimes
+violent_crimes <- subset(crime, offense != "auto theft" & offense != "theft" & offense != "burglary")
+# order violent crimes
+violent_crimes$offense <- factor(violent_crimes$offense, levels=c("robbery", "aggravated assault", "rape", "murder"))
+# restrict to downtown
+violent_crimes <- subset(violent_crimes, -95.39681 <= lon & lon <= -95.34188 & 29.73631 <= lat & lat <= 29.78400)
+
+# figure 8
+theme_set(theme_bw(16))
+HoustonMap <- qmap("houston", zoom=14, color="bw")#, legend="topleft") # it's just like ggplot()
+HoustonMap + geom_point(aes(x=lon, y=lat, colour=offense, size=offense), data=violent_crimes)
+HoustonMap + stat_bin2d(aes(x=lon, y=lat, colour=offense, fill=offense), 
+                        size=.5, 
+                        bins=30, 
+                        alpha=0.5, # transparency
+                        data=violent_crimes)
+
+# figure 9
+houston <- get_map("houston", zoom=14)
+HoustonMap + stat_density2d(aes(x=lon,y=lat,fill=..level.., alpha=..level..),
+                            size=2, bins=4, data=violent_crimes,
+                            geom="polygon")
+overlay <- stat_density2d(aes(x=lon, y=lat, fill=..level.., alpha=..level..),
+                          bins=4, geom="polygon",
+                          data=violent_crimes)
+HoustonMap + overlay + inset(grob=ggplotGrob(ggplot()+overlay+theme_inset()),
+                             xmin=-95.35836, xmax=Inf, ymin=-Inf, ymax=29.75062)
+
+# figure 10
+houston <- get_map(location="houston", zoom=14, color="bw",
+                   source="osm")
+HoustonMap <- ggmap(houston, base_layer=ggplot(aes(x=lon,y=lat),
+                                               data=violent_crimes))
+HoustonMap + 
+  stat_density2d(aes(x=lon,y=lat,fill=..level..,alpha=..level..),
+                 bins=5, geom="polygon",
+                 data=violent_crimes) +
+  scale_fill_gradient(low="black", high="red") +
+  facet_wrap(~day)
+
+# ggmap's utility functions
+geocode("baylor university", output="more")
+gc <- geocode("boston university")
+(gc <- as.numeric(gc))
+revgeocode(gc)
+revgeocode(gc, output="more")
+from <- c("houston", "houston", "dallas")
+to <- c("waco, texas", "san antonio", "houston")
+mapdist(from, to)
+###############################################################
+map <- get_googlemap("02134", markers = df, scale = 4)
+ggmap(map, extent = 'device')
+
+geocode("Boston")
+set.seed(50)
+df <- round(data.frame(
+  x = jitter(rep(-71.05977, 40), amount = .3),
+  y = jitter(rep( 42.35843, 40), amount = .3)
+), digits = 2)
+map <- get_googlemap('Boston', markers = df, path = df, scale = 1)
+ggmap(map, extent = 'device')
+
+# Google's four type: terrain, satellite, roadmap, hybrid
+
+
+
+# Both Stamen Maps and CloudMade Maps are built using OpenStreetMap data
+
+#                                the ggmap function
+# The one minor drawback to using
+# CloudMade Maps is that the user must register with CloudMade to obtain an API key and then pass
+# the API key into get_map with the api_key argument
+paris <- get_map(location = "paris")
+str(paris)
+qmap(baylor, zoom = 14, maptype = 53428, api_key = api_key, source = "cloudmade") 
+qmap("houston", zoom = 10, maptype = 58916, api_key = api_key, source = "cloudmade")
+
+ggplot(aes(x = lon, y = lat), data = fourCorners) +
+  geom_blank() + coord_map("mercator") +
+  annotation_raster(ggmap, xmin, xmax, ymin, ymax)
+
+# It accepts three possible strings: "normal" shown in Figure 7, "panel" shown in Figures 10 and
+# 12, and "device" shown in every other figure.
+
+# setting the limits of the plot panel to be the longitude and latitude extents of the map with
+# scale_[x,y]_continuous(expand = c(0,0))
+
+# base_layer, facet_wrap and facet_grid
+
+ggmap(paris, extent = "device")
+
+# The legend-related arguments of ggmap are legend and padding, only applicable
+# when extent = "device" 
+
+#                                ggmap in action
+str(crime)
+
+# gglocator , a ggplot2 analogue of base’s locator function exported from ggmap. 
+# gglocator works not only for ggmap plots, but ggplot2 graphics in general.
+
+# find a reasonable spatial extent
+qmap('houston', zoom = 13)
+gglocator(2)
+# only violent crimes
+violent_crimes <- subset(crime, 
+                         offense != "auto theft" & offense != "theft" & offense != "burglary")
+# order violent crimes
+violent_crimes$offense <- factor(violent_crimes$offense,
+                                 levels = c("robbery", "aggravated assault", "rape", "murder"))
+# restrict to downtown
+violent_crimes <- subset(violent_crimes,
+                         -95.39681 <= lon & lon <= -95.34188 &
+                           29.73631 <= lat & lat <= 29.78400)
+
+
+
+
+clicks <- clicks <- gglocator(4)
+box <- expand.grid(lon=clicks$lon, lat=clicks$lat)
 
 
 
