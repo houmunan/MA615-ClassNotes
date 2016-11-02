@@ -3,24 +3,25 @@
 \title{Assignment 4}
 \author{Munan Hou}
 
+\usepackage{Sweave}
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+\input{Assignment_4-concordance}
 
 \maketitle
 
 Example bbbbbbbbbbbbbbbbbbbbbbbbbbbb
 
-<<>>=
-data(airquality)
-library(ggplot2)
-@
+\begin{Schunk}
+\begin{Sinput}
+> data(airquality)
+> library(ggplot2)
+\end{Sinput}
+\end{Schunk}
 
 hehehe
 
 \begin{center}
-<<fig=TRUE, echo=FALSE>>=
-boxplot(Ozone ~ Month, data = airquality)
-@
+\includegraphics{Assignment_4-002}
 
 heiheiheiiiiiiiiiiiiiiiii
 \end{center}
