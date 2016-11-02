@@ -1126,3 +1126,285 @@ box <- expand.grid(lon=clicks$lon, lat=clicks$lat)
 install.packages("ctest")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Class 25 11.2.2016 WED mapping package:“ggmap” continue
+
+########
+#maps.R#
+########
+
+
+##### ggmap
+install.packages("rgdal")
+install.packages("scales")
+install.packages("ggthemes")
+library(rgdal)
+library(ggmap)
+library(ggplot2)
+library(scales)
+library(ggthemes)
+
+# get US county shape file
+# https://www.census.gov/geo/maps-data/data/cbf/cbf_counties.html
+us_county <- readOGR(dsn=".", layer="cb_2015_us_county_5m") #S4
+county_shape <- spTransform(us_county, CRS("+proj=longlat +datum=WGS84")) #S4
+county_shape <- fortify(county_shape) # list
+county_shape$group <- as.numeric(as.character(county_shape$id))
+
+USmap <- get_map("United States", zoom=4)
+ggmap(USmap) + geom_polygon(aes(x=long, y=lat, group=group,fill=group), 
+                            size=.2,color='green', 
+                            data=county_shape, alpha=.3)
+
+View(county_shape)
+# boston shape file
+# https://data.cityofboston.gov/City-Services/Boston-Neighborhood-Shapefiles/af56-j7tb/data
+bos_shape_source <- readOGR(dsn=".", layer="Bos_neighborhoods") #S4
+bos_shape_0 <- spTransform(bos_shape_source, CRS("+proj=longlat +datum=WGS84")) #S4
+bos_shape <- fortify(bos_shape_0) # list
+
+# combine boundary with neighborhoods name
+df.name <- data.frame(name=bos_shape_source$Name,
+                      id=c(0:(length(bos_shape_source$Name)-1)))
+df.name$name <- as.character(df.name$name)
+
+# merge
+bos_shape <- merge(x=bos_shape, y=df.name, by.x="id", by.y="id")
+bos_shape <- merge(x=bos_shape, y=bos_shape_0, by.x="name", by.y="Name")
+
+# aggregate
+name.location <- aggregate(cbind(long,lat) ~ name, data=bos_shape, FUN=function(x) mean(range(x))) # mean of upper and lower limit
+
+# draw the shape
+ggplot(data = bos_shape, aes(x = long, y = lat, group = group)) + geom_path()
+ggplot(data = bos_shape, aes(x = long, y = lat, group = group)) + geom_polygon()
+
+# combine with map
+BostonMap <- get_map("Boston", zoom=11)
+
+ggmap(BostonMap) + geom_path(data = bos_shape, aes(x = long, y = lat, group = group))
+ggmap(BostonMap) + geom_polygon(data = bos_shape, aes(x = long, y = lat, group = group), 
+                                alpha=0.5) # opacity
+
+# test
+#bos_shape_temp <- bos_shape[bos_shape$id==21,]
+ggmap(BostonMap) + geom_polygon(aes(x=long, y=lat, group=group), 
+                                fill='grey', size=.2,color='green', 
+                                data=bos_shape, alpha=.3)
+#View(bos_shape_0)
+# make up some fake data
+bos_shape$fake <- (as.numeric(as.vector(bos_shape$group))*10)%%45
+ggmap(BostonMap) + geom_polygon(aes(x=long, y=lat, group=group, fill=fake), 
+                                size=.2,color='green', 
+                                data=bos_shape, alpha=.6)
+
+# pop data
+library(plotly)
+ggmap(BostonMap) + geom_polygon(aes(x=long, y=lat, group=group, fill=SqMiles), 
+                                size=.2,color='green', 
+                                data=bos_shape, alpha=.6) +
+  geom_text(data=name.location, aes(long, lat, label = name), size=3)
+p <- ggplotly()
+layout(p)
+
+########################################################################################
+##### leaflet interactive map
+#Library
+library(leaflet)
+
+### change background tile
+# Background 1: NASA
+m=leaflet() %>% addTiles() %>% setView( lng = 2.34, lat = 48.85, zoom = 5 ) %>% addProviderTiles("NASAGIBS.ViirsEarthAtNight2012")
+m
+
+# Background 2: World Imagery
+m=leaflet() %>% addTiles() %>% setView( lng = 2.34, lat = 48.85, zoom = 3 ) %>% addProviderTiles("Esri.WorldImagery")
+m
+
+### add circles and rectangles
+# Create 20 markers (Random points)
+data=data.frame(long=sample(seq(-150,150),20) ,  lat=sample(seq(-50,50),20) , val=round(rnorm(20),2) , name=paste("point",letters[1:20],sep="_")  ) 
+
+# Show a circle at each position
+m=leaflet(data = data) %>% addTiles() %>% 
+  addCircleMarkers(~long, ~lat , popup = ~as.character(name))
+m
+
+# Show a CUSTOM circle at each position. Size defined in Pixel. Size does not change when you zoom
+# (addCircleMarkers)
+m=leaflet(data = data) %>% addTiles() %>%  addProviderTiles("Esri.WorldImagery") %>%
+  addCircleMarkers(~long, ~lat, radius=~val*14, 
+                   color=~ifelse(data$val>0 , "red", "orange"), stroke = TRUE, 
+                   fillOpacity = 0.2, popup = ~as.character(name)) 
+m
+
+# Show a CUSTOM circle at each position. Size in meters --> change when you zoom.
+# (addCircles)
+m=leaflet(data = data) %>% addTiles()  %>%  addProviderTiles("Esri.WorldImagery") %>%
+  addCircles(~long, ~lat, radius=~val*1000000, 
+             color=~ifelse(data$val>0 , "red", "orange"), stroke = TRUE, 
+             fillOpacity = 0.2, popup = ~as.character(name)) %>% 
+  setView( lng = 166.45, lat = 21, zoom = 2)
+m
+
+# Show a rectangle
+m=leaflet() %>% addTiles() %>%  
+  addRectangles(
+    lng1=-118.456554, lat1=34.078039,
+    lng2=-118.436383, lat2=34.062717,
+    fillColor = "transparent"
+  )
+m
+
+### Choropleth map with leaflet (shapefile)
+
+# First we need to to load the shape file of the world map to know the border 
+# position of every country. See graph #168 to have a complete description of this step. 
+# We can summarize this step with these 4 lines of code:
+# Download .shp file on the web:
+download.file("http://thematicmapping.org/downloads/TM_WORLD_BORDERS_SIMPL-0.3.zip" , destfile="world_shape_file.zip")
+system("unzip world_shape_file.zip")
+# Read the file with rgdal
+#install.packages('rgeos', type="source")
+#install.packages("rgdal", repos = 'http://cran.us.r-project.org', dependencies=T)
+library(rgdal)
+world_spdf=readOGR( dsn= getwd() , layer="TM_WORLD_BORDERS_SIMPL-0.3")
+
+# Color by quantile
+m=leaflet(world_spdf)%>% addTiles()  %>% setView( lat=10, lng=100 , zoom=2) %>%
+  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = ~colorQuantile("YlOrRd", POP2005)(POP2005) )
+m
+
+# Numeric palette
+m=leaflet(world_spdf)%>% addTiles()  %>% setView( lat=10, lng=0 , zoom=2) %>%
+  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = ~colorNumeric("YlOrRd", POP2005)(POP2005) )
+m
+
+# Bin
+m=leaflet(world_spdf)%>% addTiles()  %>% setView( lat=10, lng=0 , zoom=2) %>%
+  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = ~colorBin("YlOrRd", POP2005)(POP2005) )
+m
+
+### Add markers on leaflet map
+# Show a marker at each position
+m=leaflet(data = data) %>% addTiles() %>% addMarkers(~long, ~lat, popup = ~as.character(long))
+m
+
+
+
+
+# DRAFT
+########################################################################################
+########################################################################################
+########
+# read data
+pop <- read.csv("pop.csv")
+pop$neighborhood <- as.character(pop$neighborhood)
+df.name$name[df.name$name %in% c("Allston","Brighton")] <- pop$neighborhood[1]
+df.name$name[df.name$name %in% c("Bay Village")] <- pop$neighborhood[2]
+df.name$name[df.name$name %in% c("West End")] <- pop$neighborhood[3]
+df.name$name[df.name$name %in% c("South Boston","South Boston Waterfront")] <- pop$neighborhood[15]
+df.name$name[df.name$name %in% c("Downtown","Chinatown","North End","Leather District")] <- pop$neighborhood[6]
+df.name$name[df.name$name %in% c("Fenway","Longwood Medical Area")] <- pop$neighborhood[8]
+bos_shape <- fortify(bos_shape_0) # list
+########
+
+
+
+
+
+oilgas <- read.csv("oilgascounty.csv")
+View(oilgas)
+
+
+
+
+###
+summary(county_shape$long[county_shape$id==1])
+county_shape[county_shape$long<=-90&county_shape$long>-91&county_shape$lat>35&county_shape$lat<36,]
+unique(county_shape$id)
+state.abb
+### 
+
+
+
+# group oilgas data by states
+state_gas <- data.frame(stabr=oilgas$Stabr,gas2011=oilgas$gas2011)
+state_gas <- aggregate(gas2011~stabr, state_gas, function(x){sum(as.numeric(x))})
+
+# join county_shape & oilgas data
+county_shape <- merge(x=county_shape, y=state_gas, by.x="abb", by.y="stabr")
+county_shape$gas2011per <- log(county_shape$gas2011+1)/max(log(county_shape$gas2011+1))
+# draw map 
+ggmap(USmap) + geom_polygon(aes(x=long, y=lat, group=group,fill=gas2011per), 
+                            size=.2, color='green', 
+                            data=county_shape, alpha=.6)
+
+# https://www.census.gov/geo/maps-data/data/tiger-cart-boundary.html
+
+##########################################################################
+
+# get state name for each point
+# I found this function on stackoverflow
+library(sp)
+library(maps)
+library(maptools)
+# The single argument to this function, pointsDF, is a data.frame in which:
+#   - column 1 contains the longitude in degrees (negative in the US)
+#   - column 2 contains the latitude in degrees
+latlong2state <- function(pointsDF) {
+  # Prepare SpatialPolygons object with one SpatialPolygon
+  # per state (plus DC, minus HI & AK)
+  states <- map('state', fill=TRUE, col="transparent", plot=FALSE)
+  IDs <- sapply(strsplit(states$names, ":"), function(x) x[1])
+  states_sp <- map2SpatialPolygons(states, IDs=IDs,
+                                   proj4string=CRS("+proj=longlat +datum=WGS84"))
+  
+  # Convert pointsDF to a SpatialPoints object 
+  pointsSP <- SpatialPoints(pointsDF, 
+                            proj4string=CRS("+proj=longlat +datum=WGS84"))
+  
+  # Use 'over' to get _indices_ of the Polygons object containing each point 
+  indices <- over(pointsSP, states_sp)
+  
+  # Return the state names of the Polygons object containing each point
+  stateNames <- sapply(states_sp@polygons, function(x) x@ID)
+  stateNames[indices]
+}
+# Test the function using points in Wisconsin and Oregon.
+testPoints <- data.frame(x = county_shape$long, y = county_shape$lat)
+state_name <- latlong2state(testPoints)
+county_shape$state_name <- state_name
+
+
+# get abbreviations of state names
+library(dplyr)
+county_shape$abb <- state.abb[match(state_name,sapply(as.list(state.name),tolower))]
+
+
+
+
