@@ -871,7 +871,6 @@ install.packages("ggplot2")
 install.packages("ggmap")
 install.packages("sp")
 install.packages("RgoogleMaps")
-install.packages("ggmap")
 install.packages("maptools")
 install.packages("datasets")
 install.packages("tigris")
@@ -1151,7 +1150,7 @@ install.packages("ctest")
 
 
 
-##Class 25 11.2.2016 WED mapping package:“ggmap” continue
+##Class 25 11.2.2016 WED mapping package:“ggmap” continue DISCUSS
 
 ########
 #maps.R#
@@ -1408,3 +1407,30 @@ county_shape$abb <- state.abb[match(state_name,sapply(as.list(state.name),tolowe
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Class 25 11.2.2016 WED twitterR
+
+install.packages("twitteR")
+install.packages("devtools")
