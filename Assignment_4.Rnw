@@ -19,10 +19,8 @@ library(nortest)
 library(normtest)
 @
 
-
-
-
 First, sample and summary that on average, for sums of how many uniform distribution could follow a normal distribution, on the significance level p=.05
+
 <<Test uniform>>=
 data1 <- c()
 number <- c()
@@ -42,9 +40,11 @@ for (k in 1:100) {
 number
 mean(number)
 @
+
 Result shows, on average, the mean of "the sum of minimum amount of uniform distributions" which can construct a normal distribution is approximately 4.
 
 Then test Poisson distribution with lambda = 10.
+
 <<Test Poi>>=
 data1 <- c()
 number <- c()
@@ -63,6 +63,7 @@ for (k in 1:100) {
 number
 mean(number)
 @
+
 Approximately 11 - 13 Poisson distributions.
 
 Compare with uniform, Poisson converges more slowly.
@@ -72,6 +73,7 @@ Compare with uniform, Poisson converges more slowly.
 2. Delta Method
 
 Sampling Poisson(5)
+
 <<delta>>=
 x <- rpois(1000, 5)
 data2 <- c()
@@ -88,6 +90,7 @@ qqnorm(y);qqline(y)
 
 shapiro.test(data2)
 @
+
 Test shows it follows normal dist.
 
 3. Student's t-test
@@ -103,7 +106,8 @@ lines(x, tdist1df, col = 'red')
 lines(x, tdist10df, col = 'green')
 lines(x, tdist100df, col = 'blue')
 @
- Could easily see that, with higher d.f., a t-distribution are approaching the normal distribution.
+
+Could easily see that, with higher d.f., a t-distribution are approaching the normal distribution.
 
 4. Median, Mean Square Error, Bootstrap
 
@@ -125,28 +129,5 @@ MSE <- sum((median - Tboot) ^ 2) / length(Tboot)
 MSE
 
 @
-
-
-
-
-
-
-
-
-
-
-
-
-
-hehehe
-
-/begin{center}
-<<fig=TRUE, echo=FALSE>>=
-boxplot(Ozone ~ Month, data = airquality)
-@
-
-heiheiheiiiiiiiiiiiiiiiii
-/end{center}
-
 
 /end{document}
