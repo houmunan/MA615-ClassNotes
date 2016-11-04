@@ -1,29 +1,152 @@
-\documentclass[a4paper]{article}
+/documentclass[a4paper]{article}
 
-\title{Assignment 4}
-\author{Munan Hou}
+/title{Assignment 4}
+/author{Munan Hou}
 
-\begin{document}
-\SweaveOpts{concordance=TRUE}
+/begin{document}
+/SweaveOpts{concordance=TRUE}
 
-\maketitle
+/maketitle{}
+1. CLT
 
-Example bbbbbbbbbbbbbbbbbbbbbbbbbbbb
+I've searched the google and found 10+ tests. The tests that I familiar with are Kolmogorov–Smirnov test, Pearson's chi-squared test, test of kurtosis and skewnessand, and shapiro-wilk test and qq plot.
 
-<<>>=
-data(airquality)
+So I am going to dig this on my own way. This is a little bit mess.
+
+<<load packages>>=
 library(ggplot2)
+library(nortest)
+library(normtest)
 @
+
+
+
+
+First, sample and summary that on average, for sums of how many uniform distribution could follow a normal distribution, on the significance level p=.05
+<<Test uniform>>=
+data1 <- c()
+number <- c()
+for (k in 1:100) {
+  for (i in 1:50) {
+    data1 <- c()
+    for (j in 1:1000) {
+      index <- runif(i)
+      sumindex <- sum(index)
+      data1[j] <- sumindex
+    }
+    if (shapiro.test(data1)["p.value"] > .05) {
+      number <- c(number,i);break
+    }
+  }
+}
+number
+mean(number)
+@
+Result shows, on average, the mean of "the sum of minimum amount of uniform distributions" which can construct a normal distribution is approximately 4.
+
+Then test Poisson distribution with lambda = 10.
+<<Test Poi>>=
+data1 <- c()
+number <- c()
+for (k in 1:100) {
+  for (i in 1:50) {
+    for (j in 1:1000) {
+      index <- rpois(i, lambda = 5)
+      sumindex <- sum(index)
+      data1[j] <- sumindex
+    }
+    if (shapiro.test(data1)["p.value"] > .05) {
+      number <- c(number,i);break
+    }
+  }
+}
+number
+mean(number)
+@
+Approximately 11 - 13 Poisson distributions.
+
+Compare with uniform, Poisson converges more slowly.
+
+/maketitle{}
+
+2. Delta Method
+
+Sampling Poisson(5)
+<<delta>>=
+x <- rpois(1000, 5)
+data2 <- c()
+
+hist(x)
+
+for (j in 1:1000) {
+  index <- rpois(1000, 5)
+  data2 <- c(data2, mean(rpois(1000, 5)))
+  }
+
+y <- 1/data2
+qqnorm(y);qqline(y)
+
+shapiro.test(data2)
+@
+Test shows it follows normal dist.
+
+3. Student's t-test
+
+<<t and norm>>=
+x <- seq(-4, 4, length = 10000)
+normdist <- dnorm(x, mean = 0, sd = 1)
+tdist1df <- dt(x, df = 1)
+tdist10df <- dt(x, df = 10)
+tdist100df <- dt(x, df = 100)
+plot(x, normdist, type = "l")
+lines(x, tdist1df, col = 'red')
+lines(x, tdist10df, col = 'green')
+lines(x, tdist100df, col = 'blue')
+@
+ Could easily see that, with higher d.f., a t-distribution are approaching the normal distribution.
+
+4. Median, Mean Square Error, Bootstrap
+
+<<mean and MSE>>=
+productsales <- read.delim("C:/YUKIHO/BU/MA 615/Assignments/6/productsales.dat")
+productsales <- as.numeric(as.matrix(productsales))
+median <- median(productsales)
+
+Tboot <- rep(0,10000)
+for (i in 1:10000){
+  rep = sample(productsales, length(productsales), replace = TRUE)
+  Tboot[i] = median(rep)
+  }
+
+median <- mean(Tboot)
+median
+
+MSE <- sum((median - Tboot) ^ 2) / length(Tboot)
+MSE
+
+@
+
+
+
+
+
+
+
+
+
+
+
+
 
 hehehe
 
-\begin{center}
+/begin{center}
 <<fig=TRUE, echo=FALSE>>=
 boxplot(Ozone ~ Month, data = airquality)
 @
 
 heiheiheiiiiiiiiiiiiiiiii
-\end{center}
+/end{center}
 
 
-\end{document}
+/end{document}
