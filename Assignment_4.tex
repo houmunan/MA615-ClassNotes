@@ -1,13 +1,15 @@
-/documentclass[a4paper]{article}
+\documentclass[a4paper]{article}
 
-/title{Assignment 4}
-/author{Munan Hou}
+\title{Assignment 4}
+\author{Munan Hou}
 
-/begin{document}
-/SweaveOpts{concordance=TRUE}
+\usepackage{Sweave}
+\begin{document}
+\input{Assignment_4-concordance}
 
-/maketitle{}
-1. CLT
+\maketitle{}
+
+\section{1. CLT}
 
 I've searched the google and found 10+ tests. The tests that I familiar with are Kolmogorov–Smirnov test, Pearson's chi-squared test, test of kurtosis and skewnessand, and shapiro-wilk test and qq plot.
 
@@ -43,15 +45,15 @@ First, sample and summary that on average, for sums of how many uniform distribu
 > number
 \end{Sinput}
 \begin{Soutput}
-  [1] 4 3 3 4 4 4 3 5 5 3 6 5 3 3 5 4 3 4 4 4 5 4 5 4 3 5 4 4 3 4 4 4 5 3 4 5 4
- [38] 6 4 4 4 3 3 4 4 4 5 4 5 5 4 4 4 3 3 3 6 6 4 5 6 4 4 4 4 4 3 5 3 4 4 4 4 4
- [75] 6 4 4 3 3 4 5 4 3 5 4 6 3 5 3 3 4 4 3 3 4 5 4 6 5 3
+  [1] 4 5 5 5 4 4 5 4 4 5 4 3 6 5 6 4 4 4 4 5 4 5 4 4 6 3 4 4 5 4 4 5 4 5 4 4 4
+ [38] 4 3 3 6 3 5 3 4 4 4 4 4 3 4 4 3 4 4 4 5 3 4 4 4 4 5 5 5 4 5 5 4 4 3 4 3 4
+ [75] 5 3 6 4 4 3 5 4 4 3 3 4 4 3 3 3 5 3 3 3 4 6 4 3 4 3
 \end{Soutput}
 \begin{Sinput}
 > mean(number)
 \end{Sinput}
 \begin{Soutput}
-[1] 4.09
+[1] 4.1
 \end{Soutput}
 \end{Schunk}
 
@@ -78,16 +80,16 @@ Then test Poisson distribution with lambda = 10.
 > number
 \end{Sinput}
 \begin{Soutput}
-  [1] 14 14 13 15  9 12 11 13 15 12 12 10 13 13 13 15 13 13 10 12 14 16  9 12 13
- [26] 13 14 12 12 20 18 11 12 15 14 11  8 15 18 17 11 15 12 13 17 12 12 14 15 13
- [51] 11 18 14  8 13 11 11 12 13 14 17 11 17  9 20 10 10  9 14 16 13 17 13  9 11
- [76] 16 11 11 12 14 10  9 14 11 11 12 11 10 13 11 10 14 16 13 13 12 14 17 12 11
+  [1] 12 13 10 11 10 13 13 10 11 10 15 14 13 16 10 14 12 10 14 15 13 10 13 10 13
+ [26] 15 16 16 16 14 10 16 13 14  8 20 13 10 17 14 13 14 13 10 13 11 13 12 12 16
+ [51] 17 14 11 14 12  8 15 10 18 11 14 12 13 11 12 13 11  9 10 15 13  9 10 13  8
+ [76] 14 13 12 11 17 14 14 10 15 11 15 10 10  9  9 12 10 14  9  9 19  7 15 11  9
 \end{Soutput}
 \begin{Sinput}
 > mean(number)
 \end{Sinput}
 \begin{Soutput}
-[1] 12.89
+[1] 12.46
 \end{Soutput}
 \end{Schunk}
 
@@ -95,9 +97,7 @@ Approximately 11 - 13 Poisson distributions.
 
 Compare with uniform, Poisson converges more slowly.
 
-/maketitle{}
-
-2. Delta Method
+\section{2. Delta Method}
 
 Sampling Poisson(5)
 
@@ -118,13 +118,13 @@ Sampling Poisson(5)
 	Shapiro-Wilk normality test
 
 data:  data2
-W = 0.99698, p-value = 0.05559
+W = 0.9986, p-value = 0.6235
 \end{Soutput}
 \end{Schunk}
 
 Test shows it follows normal dist.
 
-3. Student's t-test
+\section{3. Student's t-test}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -142,7 +142,7 @@ Test shows it follows normal dist.
 
 Could easily see that, with higher d.f., a t-distribution are approaching the normal distribution.
 
-4. Median, Mean Square Error, Bootstrap
+\section{4. Median, Mean Square Error, Bootstrap}
 
 \begin{Schunk}
 \begin{Sinput}
@@ -158,18 +158,18 @@ Could easily see that, with higher d.f., a t-distribution are approaching the no
 > median
 \end{Sinput}
 \begin{Soutput}
-[1] 90213.79
+[1] 90182.79
 \end{Soutput}
 \begin{Sinput}
 > MSE <- sum((median - Tboot) ^ 2) / length(Tboot)
 > MSE
 \end{Sinput}
 \begin{Soutput}
-[1] 24752358
+[1] 25032750
 \end{Soutput}
 \begin{Sinput}
 > 
 \end{Sinput}
 \end{Schunk}
 
-/end{document}
+\end{document}

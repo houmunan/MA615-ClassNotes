@@ -1,13 +1,14 @@
-/documentclass[a4paper]{article}
+\documentclass[a4paper]{article}
 
-/title{Assignment 4}
-/author{Munan Hou}
+\title{Assignment 4}
+\author{Munan Hou}
 
-/begin{document}
-/SweaveOpts{concordance=TRUE}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
 
-/maketitle{}
-1. CLT
+\maketitle{}
+
+\section{1. CLT}
 
 I've searched the google and found 10+ tests. The tests that I familiar with are Kolmogorov–Smirnov test, Pearson's chi-squared test, test of kurtosis and skewnessand, and shapiro-wilk test and qq plot.
 
@@ -68,9 +69,7 @@ Approximately 11 - 13 Poisson distributions.
 
 Compare with uniform, Poisson converges more slowly.
 
-/maketitle{}
-
-2. Delta Method
+\section{2. Delta Method}
 
 Sampling Poisson(5)
 
@@ -93,7 +92,7 @@ shapiro.test(data2)
 
 Test shows it follows normal dist.
 
-3. Student's t-test
+\section{3. Student's t-test}
 
 <<t and norm>>=
 x <- seq(-4, 4, length = 10000)
@@ -109,7 +108,7 @@ lines(x, tdist100df, col = 'blue')
 
 Could easily see that, with higher d.f., a t-distribution are approaching the normal distribution.
 
-4. Median, Mean Square Error, Bootstrap
+\section{4. Median, Mean Square Error, Bootstrap}
 
 <<mean and MSE>>=
 productsales <- read.delim("C:/YUKIHO/BU/MA 615/Assignments/6/productsales.dat")
@@ -130,4 +129,4 @@ MSE
 
 @
 
-/end{document}
+\end{document}
