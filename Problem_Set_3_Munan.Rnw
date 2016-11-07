@@ -1,0 +1,25 @@
+\documentclass[a4paper]{article}
+
+\title{Problem Set 3}
+\author{Munan Hou}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\maketitle{}
+
+\section{}
+
+<<load package>>=
+
+@
+
+
+
+
+
+
+
+
+
+\end{document}
