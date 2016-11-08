@@ -8,16 +8,175 @@
 
 \maketitle{}
 
+<<>>=
+library(dplyr)
+@
+
 \section{}
 
 <<load package>>=
-
+hipp <- read.csv("C:/YUKIHO/BU/MA 615/Classes/9.12.2016/class 9.12.2016/ma_568/Homework 3/hipp_data.csv")
+plot(hipp$xN,hipp$yN,type='l',col='blue', xlab="X", ylab="Y")
+hipp1 <- subset(hipp,spikes==1)
+hipp2 <- subset(hipp,spikes2==1)
+points(hipp1$xN,hipp1$yN,col='red',pch=19)
+points(hipp2$xN,hipp2$yN,col='green',pch=19)
 @
 
 
 
+\section{}
 
+<<>>=
+model1 <- glm(spikes~xN+yN,family = poisson,data=hipp)
+summary(model1)
+@
 
+<<>>=
+lambda <- function(x,y) {
+  exp(model1$coefficients[1]+model1$coefficients[2]*x+model1$coefficients[3]*y)
+}
+
+x_new <- seq(-1,1,.1)
+y_new <- seq(-1,1,.1)
+z<- outer(x_new,y_new,lambda)
+persp(x_new, y_new, z, theta = 30, phi = 30, expand = 0.5, col = "lightblue", xlab="X", ylab = "Y",main="Maximum Likelihood Model Indensity") -> res
+phi <- seq(0, 2*pi, len = 201)
+xr <- cos(phi)
+yr <- sin(phi)
+lines(trans3d(xr,yr,lambda(xr,yr),res), col = "pink", lwd = 2)
+@
+
+\section{}
+
+<<>>=
+hipp$xN2 <- (hipp$xN)^2
+hipp$yN2 <- (hipp$yN)^2
+model2 <- glm(spikes~xN2+yN2+xN+yN,family = poisson,data=hipp)
+summary(model2)
+@
+
+<<>>=
+lambda2 <- function(x,y) {
+  exp(model2$coefficients[1]+model2$coefficients[2]*(x^2)+model2$coefficients[3]*(y^2)+ model2$coefficients[4]*x+model2$coefficients[5]*y)
+  }
+
+z2<- outer(x_new,y_new,lambda2)
+persp(x_new, y_new, z2, theta = 30, phi = 30, expand = 0.5, col = "lightblue", xlab="X", ylab = "Y",main="Maximum Likelihood Model Indensity") -> res
+phi <- seq(0, 2*pi, len = 201)
+xr <- cos(phi)
+yr <- sin(phi)
+lines(trans3d(xr,yr,lambda(xr,yr),res), col = "pink", lwd = 2)
+@
+
+<<>>=
+model2$aic
+@
+
+<<>>=
+model1$aic
+@
+
+\section{}
+
+<<>>=
+hipp_none <- select(hipp,spikes,xN,yN,xN2:yN2,spikes_hist1:spikes_hist20)
+p <- c()
+AIC <- c()
+for (i in 5:25) {
+  hipp_haha <- hipp_none[,1:i]
+  aa <- glm(spikes~.,family = poisson,data = hipp_haha)
+  AIC <- c(AIC,aa$aic)
+  p <- c(p,i-5)
+  }
+
+record <- data.frame("p"=p,"AIC"=AIC)
+plot(record$p,record$AIC,type="l",xlab="p",ylab="AIC")
+points(record$p,record$AIC)
+@
+
+<<>>=
+subset(record, AIC==min(AIC))
+@
+
+\section{}
+
+<<>>=
+hipp_none2 <- select(hipp,spikes,xN,yN,xN2,yN2,spikes_hist1:spikes_hist8, spikes2_hist1:spikes2_hist20)
+p2 <- c()
+AIC2 <- c()
+for (i in 13:33) {
+  hipp_haha <- hipp_none2[,1:i]
+  aa <- glm(spikes~.,family = poisson,data = hipp_haha)
+  AIC2 <- c(AIC2,aa$aic)
+  p2 <- c(p2,i-13)
+  }
+
+record2 <- data.frame("p1"=8,"p2"=p2,"AIC2"=AIC2)
+subset(record2, AIC2==min(AIC2))
+
+@
+
+\section{}
+
+<<>>=
+hipp_none3 <- select(hipp,spikes,xN,yN,xN2,yN2,spikes_hist1:spikes_hist20, spikes2_hist1:spikes2_hist20)
+p41 <- c()
+p42 <- c()
+AIC4 <- c()
+for (k in 5:25){
+  hipp_haha <- hipp_none3[,1:k] %>% select(-xN,-yN,-xN2,-yN2)
+  aa <- glm(spikes~.,family = poisson,data = hipp_haha)
+  AIC4 <- c(AIC4,aa$aic)
+  p41 <- c(p41,k-5)
+  p42 <- c(p42,0)
+  for (i in 26:45){
+    hipp_haha <- hipp_none3[,c(1:k,26:i)] %>% select(-xN,-yN,-xN2,-yN2)
+    aa <- glm(spikes~.,family = poisson,data = hipp_haha)
+    AIC4 <- c(AIC4,aa$aic)
+    p41 <- c(p41,k-5)
+    p42 <- c(p42,i-25)
+    }
+  }
+
+record4 <- data.frame("p1"=p41,"p2"=p42,"AIC"=AIC4)
+subset(record4,AIC==min(AIC))
+@
+
+<<>>=
+hipp_none4 <- hipp_none3 %>% select(-xN,-yN,-xN2,-yN2)
+summary(glm(spikes~.,family = poisson,data=hipp_none4))
+@
+
+\section{}
+
+<<>>=
+finalmodel <- glm(spikes~xN2+yN2+xN+yN+spikes_hist1+spikes_hist2+spikes_hist3+spikes_hist4 +spikes_hist5+spikes_hist6+spikes_hist7+spikes_hist8, family = poisson,data = hipp)
+hipp[,"num"] <- 1:nrow(hipp)
+rehipp <- subset(hipp,spikes==1)
+Xi <- rehipp[,"num"]
+rescaled <- exp(finalmodel$coefficients[1]+finalmodel$coefficients[2]*hipp[,"xN2"]+ finalmodel$coefficients[3]*hipp[,"yN2"]+finalmodel$coefficients[4]*hipp[,"xN"]+ finalmodel$coefficients[5]*hipp[,"yN"]+finalmodel$coefficients[6]*hipp[,"spikes_hist1"]+ finalmodel$coefficients[7]*hipp[,"spikes_hist2"]+finalmodel$coefficients[8]*hipp [,"spikes_hist3"]+finalmodel$coefficients[9]*hipp[,"spikes_hist4"]+ finalmodel$coefficients[10]*hipp[,"spikes_hist5"]+finalmodel$coefficients[11]*hipp [,"spikes_hist6"]+finalmodel$coefficients[12]*hipp[,"spikes_hist7"]+finalmodel$ coefficients[13]*hipp[,"spikes_hist8"])
+rescaled <- (c(0,rescaled)+c(rescaled,0))/2
+rescaled <- rescaled[2:(length(rescaled)-1)]
+rescaled1 <- c() 
+for (i in 1:(length(Xi)-1)) {
+  huhu <- sum(rescaled[Xi[i]:(Xi[i+1]-1)])
+  rescaled1 <- c(rescaled1,huhu)
+  }
+
+w <- seq(0,max(rescaled1),length.out = 1000)
+Femp <- numeric(length(w))
+Qs <- rescaled1[order(rescaled1)]
+
+for (i in 1:length(w)){
+  Femp[i] <- sum(Qs<=w[i])/length(Qs)
+  }
+
+plot(Femp,1-exp(-w),type = "l",lwd=2,ylab="Model_CDF", xlab="Empirical_CDF",main="Rescaled Intervals KS Plot")
+abline(0,1,col="red")
+abline(1.36/sqrt(nrow(rehipp)),1,lty=2,col="red")
+abline(-1.36/sqrt(nrow(rehipp)),1,lty=2,col="red")
+@
 
 
 

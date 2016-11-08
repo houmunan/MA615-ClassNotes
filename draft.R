@@ -1160,6 +1160,7 @@ install.packages("ctest")
 ##### ggmap
 install.packages("rgdal")
 install.packages("scales")
+install.packages("ggplot2")
 install.packages("ggthemes")
 library(rgdal)
 library(ggmap)
@@ -1425,8 +1426,9 @@ county_shape$abb <- state.abb[match(state_name,sapply(as.list(state.name),tolowe
 
 
 
-
-
+install.packages("plyr")
+install.packages("dplyr")
+install.packages("tidyr")
 
 
 
