@@ -1,174 +1,158 @@
 ---
 title: "Problem Set 3"
 author: "Munan Hou"
-date: "November 8, 2016"
+date: "November 8,  2016"
 output: html_document
 ---
 
 ```{r}
 library(dplyr)
+hipp_data <- read.csv("C:/YUKIHO/BU/MA 615/Classes/9.12.2016/class 9.12.2016/ma_568/Homework 3/hipp_data.csv")
 ```
 
 #Problem 1
 
 ```{r}
-hipp <- read.csv("C:/YUKIHO/BU/MA 615/Classes/9.12.2016/class 9.12.2016/ma_568/Homework 3/hipp_data.csv")
-plot(hipp$xN,hipp$yN,type='l',col='blue', xlab="X", ylab="Y")
-hipp1 <- subset(hipp,spikes==1)
-hipp2 <- subset(hipp,spikes2==1)
-points(hipp1$xN,hipp1$yN,col='red',pch=19)
-points(hipp2$xN,hipp2$yN,col='green',pch=19)
+plot(hipp_data$xN, hipp_data$yN, type='l', xlab="coordinate x", ylab="coordinate y")
+
+hipp1_data <- subset(hipp_data, spikes==1)
+points(hipp1_data$xN, hipp1_data$yN, col='red')
+
+hipp2_data <- subset(hipp_data, spikes2==1)
+points(hipp2_data$xN, hipp2_data$yN, col='blue')
 ```
+
+The plot shows that, both neuron's spikes are gathered in the left-bottom of the graph; thus we could say they are probably correlated.
 
 #Problem 2
 
 ```{r}
-model1 <- glm(spikes~xN+yN,family = poisson,data=hipp)
-summary(model1)
+m1 <- glm(spikes ~ xN  +  yN, poisson, hipp_data)
+summary(m1)
 ```
+
+All parameters are significant.
 
 ```{r}
-lambda <- function(x,y) {
-  exp(model1$coefficients[1]+model1$coefficients[2]*x+model1$coefficients[3]*y)
-}
+lambda <- function(x, y) {
+  exp(m1$coefficients[1] + m1$coefficients[2] * x + m1$coefficients[3] * y)
+  }
 
-x_new <- seq(-1,1,.1)
-y_new <- seq(-1,1,.1)
-z<- outer(x_new,y_new,lambda)
-persp(x_new, y_new, z, theta = 30, phi = 30, expand = 0.5, col = "lightblue", xlab="X", ylab = "Y",main="Maximum Likelihood Model Indensity") -> res
-phi <- seq(0, 2*pi, len = 201)
+x2 <- y2 <- seq(-1, 1, .1)
+?outer
+z<- outer(x2, y2, lambda)
+persp(x2,  y2,  z,  theta = 30,  phi = 30,  expand = 0.5,  col = "lightblue",  xlab="X",  ylab = "Y", main="Maximum Likelihood Model Indensity") -> res
+phi <- seq(0,  2 * pi,  len = 201)
 xr <- cos(phi)
 yr <- sin(phi)
-lines(trans3d(xr,yr,lambda(xr,yr),res), col = "pink", lwd = 2)
+lines(trans3d(xr, yr, lambda(xr, yr), res),  col = "pink",  lwd = 2)
 ```
+
+Due to the graph shows, the spatial firing properties are well captured.
 
 #Problem 3
 
 ```{r}
-hipp$xN2 <- (hipp$xN)^2
-hipp$yN2 <- (hipp$yN)^2
-model2 <- glm(spikes~xN2+yN2+xN+yN,family = poisson,data=hipp)
-summary(model2)
+hipp_data$xN2 <- (hipp_data$xN)^2
+hipp_data$yN2 <- (hipp_data$yN)^2
+m2 <- glm(spikes ~ xN2 + yN2 + xN + yN, poisson, hipp_data)
+summary(m2)
 ```
 
+All significant.
+
 ```{r}
-lambda2 <- function(x,y) {
-  exp(model2$coefficients[1]+model2$coefficients[2]*(x^2)+model2$coefficients[3]*(y^2)+ model2$coefficients[4]*x+model2$coefficients[5]*y)
+lambda2 <- function(x, y) {
+  exp(m2$coefficients[1] + m2$coefficients[2] * (x^2) + m2$coefficients[3] * (y^2) +  m2$coefficients[4] * x + m2$coefficients[5] * y)
   }
 
-z2<- outer(x_new,y_new,lambda2)
-persp(x_new, y_new, z2, theta = 30, phi = 30, expand = 0.5, col = "lightblue", xlab="X", ylab = "Y",main="Maximum Likelihood Model Indensity") -> res
-phi <- seq(0, 2*pi, len = 201)
+x2 <- y2 <- seq(-1, 1, .1)
+z2<- outer(x2, y2, lambda2)
+persp(x2,  y2,  z2,  theta = 30,  phi = 30,  expand = 0.5,  col = "lightblue",  xlab="X",  ylab = "Y", main="Maximum Likelihood Model Indensity") -> res
+phi <- seq(0,  2 * pi,  len = 201)
 xr <- cos(phi)
 yr <- sin(phi)
-lines(trans3d(xr,yr,lambda(xr,yr),res), col = "pink", lwd = 2)
+lines(trans3d(xr, yr, lambda(xr, yr), res),  col = "pink",  lwd = 2)
 ```
 
 ```{r}
-model2$aic
-```
-
-```{r}
-model1$aic
+m1$aic
+m2$aic
 ```
 
 #Problem 4
 
 ```{r}
-hipp_none <- select(hipp,spikes,xN,yN,xN2:yN2,spikes_hist1:spikes_hist20)
-p <- c()
-AIC <- c()
-for (i in 5:25) {
-  hipp_haha <- hipp_none[,1:i]
-  aa <- glm(spikes~.,family = poisson,data = hipp_haha)
-  AIC <- c(AIC,aa$aic)
-  p <- c(p,i-5)
+hipp_data_n <- hipp_data[, c("spikes", "xN", "yN", "xN2", "yN2", "spikes_hist1", "spikes_hist2", "spikes_hist3", "spikes_hist4", "spikes_hist5", "spikes_hist6", "spikes_hist7", "spikes_hist8", "spikes_hist9", "spikes_hist10", "spikes_hist11", "spikes_hist12", "spikes_hist13", "spikes_hist14", "spikes_hist15", "spikes_hist16", "spikes_hist17", "spikes_hist18", "spikes_hist19", "spikes_hist20")]
+p <- aic <- c()
+for (i in 6:25) {
+  hipp_data_a <- hipp_data_n[, 1:i]
+  m3 <- glm(spikes ~ ., poisson, hipp_data_a)
+  aic <- c(aic, m3$aic)
+  p <- c(p, i-5)
   }
 
-record <- data.frame("p"=p,"AIC"=AIC)
-plot(record$p,record$AIC,type="l",xlab="p",ylab="AIC")
-points(record$p,record$AIC)
+rec <- data.frame("p"=p, "aic"=aic)
+plot(rec$p, rec$aic, type="l")
+points(rec$p, rec$aic)
 ```
 
 ```{r}
-subset(record, AIC==min(AIC))
+subset(rec,  aic==min(aic))
 ```
 
 #Problem 5
 
 ```{r}
-hipp_none2 <- select(hipp,spikes,xN,yN,xN2,yN2,spikes_hist1:spikes_hist8, spikes2_hist1:spikes2_hist20)
-p2 <- c()
-AIC2 <- c()
-for (i in 13:33) {
-  hipp_haha <- hipp_none2[,1:i]
-  aa <- glm(spikes~.,family = poisson,data = hipp_haha)
-  AIC2 <- c(AIC2,aa$aic)
-  p2 <- c(p2,i-13)
+hipp_data_n2 <- hipp_data[, c("spikes", "xN", "yN", "xN2", "yN2", "spikes_hist1", "spikes_hist2", "spikes_hist3", "spikes_hist4", "spikes_hist5", "spikes_hist6", "spikes_hist7", "spikes_hist8", "spikes2_hist1", "spikes2_hist2", "spikes2_hist3", "spikes2_hist4", "spikes2_hist5", "spikes2_hist6", "spikes2_hist7", "spikes2_hist8", "spikes2_hist9", "spikes2_hist10", "spikes2_hist11", "spikes2_hist12", "spikes2_hist13", "spikes2_hist14", "spikes2_hist15", "spikes2_hist16", "spikes2_hist17", "spikes2_hist18", "spikes2_hist19", "spikes2_hist20")]
+
+p2 <- aic2 <- c()
+
+for (i in 14:33) {
+  hipp_data_a <- hipp_data_n2[, 1:i]
+  m3 <- glm(spikes ~ ., poisson, hipp_data_a)
+  aic2 <- c(aic2, m3$aic)
+  p2 <- c(p2, i-13)
   }
 
-record2 <- data.frame("p1"=8,"p2"=p2,"AIC2"=AIC2)
-subset(record2, AIC2==min(AIC2))
+rec2 <- data.frame("p1"=8, "p2"=p2, "aic2"=aic2)
 
+subset(rec2,  aic2==min(aic2))
 ```
 
 #Problem 6
 
 ```{r}
-hipp_none3 <- select(hipp,spikes,xN,yN,xN2,yN2,spikes_hist1:spikes_hist20, spikes2_hist1:spikes2_hist20)
-p41 <- c()
-p42 <- c()
-AIC4 <- c()
-for (k in 5:25){
-  hipp_haha <- hipp_none3[,1:k] %>% select(-xN,-yN,-xN2,-yN2)
-  aa <- glm(spikes~.,family = poisson,data = hipp_haha)
-  AIC4 <- c(AIC4,aa$aic)
-  p41 <- c(p41,k-5)
-  p42 <- c(p42,0)
+hipp_data_n3 <- select(hipp_data, spikes, xN, yN, xN2, yN2, spikes_hist1:spikes_hist20,  spikes2_hist1:spikes2_hist20)
+p41 <- p42 <- aic4 <- c()
+
+for (k in 6:25){
+  hipp_data_a <- hipp_data_n3[, 1:k] %>% select(-xN, -yN, -xN2, -yN2)
+  m3 <- glm(spikes ~ ., poisson, hipp_data_a)
+  aic4 <- c(aic4, m3$aic)
+  p41 <- c(p41, k-5)
+  p42 <- c(p42, 0)
   for (i in 26:45){
-    hipp_haha <- hipp_none3[,c(1:k,26:i)] %>% select(-xN,-yN,-xN2,-yN2)
-    aa <- glm(spikes~.,family = poisson,data = hipp_haha)
-    AIC4 <- c(AIC4,aa$aic)
-    p41 <- c(p41,k-5)
-    p42 <- c(p42,i-25)
+    hipp_data_a <- hipp_data_n3[, c(1:k, 26:i)] %>% select(-xN, -yN, -xN2, -yN2)
+    m3 <- glm(spikes ~ ., poisson, hipp_data_a)
+    aic4 <- c(aic4, m3$aic)
+    p41 <- c(p41, k-5)
+    p42 <- c(p42, i-25)
     }
   }
 
-record4 <- data.frame("p1"=p41,"p2"=p42,"AIC"=AIC4)
-subset(record4,AIC==min(AIC))
+rec4 <- data.frame("p1"=p41, "p2"=p42, "aic"=aic4)
+subset(rec4, aic==min(aic))
 ```
 
-```{r}
-hipp_none4 <- hipp_none3 %>% select(-xN,-yN,-xN2,-yN2)
-summary(glm(spikes~.,family = poisson,data=hipp_none4))
-```
+This does have a minimum aic. Almost every parameters are significant. The reason for why only when we fail to model the spatial component of the firing activiety is that, in spatial component, the correlation between history and network interaction is more significant.
 
 #Problem 7
 
 ```{r}
-finalmodel <- glm(spikes~xN2+yN2+xN+yN+spikes_hist1+spikes_hist2+spikes_hist3+spikes_hist4 +spikes_hist5+spikes_hist6+spikes_hist7+spikes_hist8, family = poisson,data = hipp)
-hipp[,"num"] <- 1:nrow(hipp)
-rehipp <- subset(hipp,spikes==1)
-Xi <- rehipp[,"num"]
-rescaled <- exp(finalmodel$coefficients[1]+finalmodel$coefficients[2]*hipp[,"xN2"]+ finalmodel$coefficients[3]*hipp[,"yN2"]+finalmodel$coefficients[4]*hipp[,"xN"]+ finalmodel$coefficients[5]*hipp[,"yN"]+finalmodel$coefficients[6]*hipp[,"spikes_hist1"]+ finalmodel$coefficients[7]*hipp[,"spikes_hist2"]+finalmodel$coefficients[8]*hipp [,"spikes_hist3"]+finalmodel$coefficients[9]*hipp[,"spikes_hist4"]+ finalmodel$coefficients[10]*hipp[,"spikes_hist5"]+finalmodel$coefficients[11]*hipp [,"spikes_hist6"]+finalmodel$coefficients[12]*hipp[,"spikes_hist7"]+finalmodel$ coefficients[13]*hipp[,"spikes_hist8"])
-rescaled <- (c(0,rescaled)+c(rescaled,0))/2
-rescaled <- rescaled[2:(length(rescaled)-1)]
-rescaled1 <- c() 
-for (i in 1:(length(Xi)-1)) {
-  huhu <- sum(rescaled[Xi[i]:(Xi[i+1]-1)])
-  rescaled1 <- c(rescaled1,huhu)
-  }
+m0 <- glm(spikes ~ xN2 + yN2 + xN + yN + spikes_hist1 + spikes_hist2 + spikes_hist3 + spikes_hist4  + spikes_hist5 + spikes_hist6 + spikes_hist7 + spikes_hist8,  poisson, hipp_data)
+hipp_data[, "num"] <- 1:nrow(hipp_data)
+hipp_data_zz <- subset(hipp_data, spikes==1)
+Xi <- hipp_data_zz[, "num"]
 
-w <- seq(0,max(rescaled1),length.out = 1000)
-Femp <- numeric(length(w))
-Qs <- rescaled1[order(rescaled1)]
-
-for (i in 1:length(w)){
-  Femp[i] <- sum(Qs<=w[i])/length(Qs)
-  }
-
-plot(Femp,1-exp(-w),type = "l",lwd=2,ylab="Model_CDF", xlab="Empirical_CDF",main="Rescaled Intervals KS Plot")
-abline(0,1,col="red")
-abline(1.36/sqrt(nrow(rehipp)),1,lty=2,col="red")
-abline(-1.36/sqrt(nrow(rehipp)),1,lty=2,col="red")
 ```
